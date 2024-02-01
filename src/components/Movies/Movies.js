@@ -6,11 +6,13 @@ import './Movies.css';
 
 export default function Movies() {
     return (
-        <section className='movies'>
-            <SearchForm />
-            <MoviesCardList icon={disabledLikeIcon}>
-                <button className='movies-list__add-button'>Ещё</button>
-            </MoviesCardList>
-        </section>
+        <main>
+            <section className='movies'>
+                <SearchForm />
+                <MoviesCardList icon={disabledLikeIcon}>
+                    <button className='movies-list__add-button'>Ещё</button>
+                </MoviesCardList>
+            </section>
+        </main>        
     );
 }

@@ -6,9 +6,11 @@ import './SavedMovies.css';
 
 export default function SavedMovies() {
     return (
-        <section className='saved-movies'>
-            <SearchForm />
-            <MoviesCardList icon={deleteMovieIcon} />
-        </section>
+        <main>
+            <section className='saved-movies'>
+                <SearchForm />
+                <MoviesCardList icon={deleteMovieIcon} />
+            </section>
+        </main>
     );
 }
