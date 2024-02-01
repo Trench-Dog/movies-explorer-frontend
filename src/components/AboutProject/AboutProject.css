@@ -1,0 +1,205 @@
+.about-project {
+    width: 100%;
+    background: #202020;
+    height: 499px;
+    margin: 0;
+    padding: 0;
+}
+
+.about-project__caption {
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.21;
+    color: #FFF;
+    padding: 0;
+    width: 89.06%;
+    min-height: 49px;
+    letter-spacing: -0.04em;
+    margin: 111px 610px 23px 70px;
+    border-bottom: 1px solid #DADADA;
+}
+
+.about-project__container {
+    display: grid;
+    width: 89.06%;
+    grid-template-columns: 48.2% 48.2%;
+    grid-template-rows: 24px 40px;
+    color: #FFF;
+    gap: 26px 40px;
+    padding: 0;
+    margin: 70px auto 110px;
+}
+
+.about-project__stages {
+    margin: 0;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.21;
+    letter-spacing: -0.04em;
+}
+
+.about-project__duration {
+    margin: 0;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.21;
+    letter-spacing: -0.04em;
+}
+
+.about-project__stage-description {
+    margin: 0;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.43;
+}
+
+.about-project__deadlines {
+    margin: 0;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.43;
+}
+
+.about-project__schedule {
+    display: grid;
+    width: 89.06%;
+    grid-template-columns: 20% 80%;
+    grid-template-rows: 36px 17px;
+    gap: 15px 0;
+    list-style-type: none;
+    text-align: center;
+    margin: 0 auto 110px;
+    padding: 0;
+}
+
+.about-project__backend-duration {
+    margin: 0;
+    padding-top: 10px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.21;
+    color: #000;
+    background: #3DDC84;
+}
+
+.about-project__frontend-duration {
+    margin: 0;
+    padding-top: 10px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.21;
+    color: #FFF;
+    background: #303030;
+}
+
+.about-project__backend-caption {
+    margin: 0;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.21;
+    color: #8B8B8B;
+}
+
+.about-project__frontend-caption {
+    margin: 0;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.21;
+    color: #8B8B8B;
+}
+
+@media screen and (max-width: 1000px) {
+    .about-project {
+        height: 494px;
+    }
+    .about-project__caption {
+        width: 86.98%;
+        margin: 91px auto 59px;
+    }
+    .about-project__container {
+        width: 86.98%;
+        gap: 46px 27px;
+        margin-bottom: 107px;
+    }
+    .about-project__stage-description {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+    .about-project__deadlines {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+    .about-project__schedule {
+        width: 86.98%;
+        grid-template-columns: 21% 79%;
+    }
+}
+
+@media screen and (max-width: 680px) {
+    .about-project {
+        height: 572px;
+    }
+    .about-project__caption {
+        font-size: 18px;
+        width: 88.75%;
+        margin-top: 71px;
+    }
+    .about-project__container {
+        margin-top: 61px;
+        margin-bottom: 60px;
+        width: 88.75%;
+        row-gap: 0;
+        grid-template-columns: 100%;
+        grid-template-areas: 
+        "stages"
+        "stage-description"
+        "duration"
+        "deadlines"
+    }
+    .about-project__stages {
+        font-size: 18px;
+        grid-area: stages;
+    }    
+    .about-project__duration {
+        margin-top: 100px;
+        font-size: 18px;
+        grid-area: duration;
+    }
+    .about-project__stage-description {
+        margin-top: 36px;
+        font-size: 11px;
+        line-height: 1.45;
+        grid-area: stage-description;
+    }
+    .about-project__deadlines {
+        margin-top: 16px;
+        font-size: 11px;
+        line-height: 1.45;
+        grid-area: deadlines;
+    }
+    .about-project__schedule {
+        width: 88.75%;
+        grid-template-columns: 35% 65%;
+        grid-template-rows: 35px 14px;
+        gap: 11px 0;
+        margin-bottom: 69px;
+    }
+    .about-project__backend-duration {
+        padding-top: 12px;
+        font-size: 11px;
+        line-height: 1.21;
+    }
+        .about-project__frontend-duration {
+        padding-top: 12px;
+        font-size: 11px;
+        line-height: 1.21;
+    }
+        .about-project__backend-caption {
+        font-size: 11px;
+        line-height: 1.21;
+    }
+        .about-project__frontend-caption {
+        font-size: 11px;
+        line-height: 1.21;
+    }
+}
