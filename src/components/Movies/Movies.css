@@ -1,5 +1,5 @@
 .movies {
-    margin: 0 auto 81px;
+    margin: 0 auto 80px;
     min-height: 890px;
 }
 @media screen and (max-width: 1200px) {
@@ -10,8 +10,6 @@
 @media screen and (max-width: 620px) {
     .movies {
         width: 93.75%;
-    }
-    .movies + .footer {
-        margin-top: 161px;
+        margin-bottom: 161px;
     }
 }

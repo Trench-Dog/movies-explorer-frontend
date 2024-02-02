@@ -1,6 +1,6 @@
 .saved-movies {
     margin: 0 auto 81px;
-    min-height: 959px;
+    min-height: 691px;
 }
 @media screen and (max-width: 1200px) {
     .saved-movies {
@@ -10,16 +10,12 @@
 @media screen and (max-width: 800px) {
     .saved-movies {
         width: 92.19%;
-    }
-    .saved-movies + .footer {
-        margin-top: 229px;
+        margin-bottom: 227px;
     }
 }
 @media screen and (max-width: 620px) {
     .saved-movies {
         width: 93.75%;
-    }
-    .saved-movies + .footer {
-        margin-top: 196px;
+        margin-bottom: 196px;
     }
 }

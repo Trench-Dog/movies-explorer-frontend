@@ -3,7 +3,7 @@
     flex-direction: row;
     justify-content: space-between;
     width: 82.58%;
-    height: 32px;
+    min-height: 32px;
     margin: 21px 70px 21px auto;
     position: relative;
 }
@@ -18,7 +18,7 @@
     font-weight: 400;
     font-size: 13px;
     line-height: 1.38;
-    color: #FFF;
+    color: #fff;
     text-decoration: none;
     margin-right: 17px;
     transition: opacity 0.5s ease;
@@ -28,7 +28,7 @@
     font-weight: 400;
     font-size: 13px;
     line-height: 1.38;
-    color: #FFF;
+    color: #fff;
     text-decoration: none;
     transition: opacity 0.5s ease;
 }
@@ -37,7 +37,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    height: 26px;
+    min-height: 26px;
     width: 100px;
     margin: 3px 3px 5px auto;
 }
@@ -46,13 +46,15 @@
     font-weight: 400;
     font-size: 13px;
     line-height: 0.92;
-    color: #FFF;
-    margin: 7px auto 2px 14px;
+    color: #fff;
+    margin: 8px auto 2px 15px;
     text-decoration: none;
     transition: opacity 0.5s ease;
 }
 
-.navigation__all-movies:hover, .navigation__saved-movies:hover, .navigation__profile-link:hover {
+.navigation__all-movies:hover,
+.navigation__saved-movies:hover,
+.navigation__profile-link:hover {
     opacity: 0.7;
 }
 
@@ -65,14 +67,14 @@
 }
 
 .navigation__profile-icon_type_blue {
-    background-color: #0F4157;
+    background-color: #0f4157;
 }
 
 .navigation__profile-icon_type_black {
     background-color: #313131;
 }
 
-.active {
+.navigation__active {
     font-weight: 500;
 }
 
@@ -88,11 +90,11 @@
     transition: opacity 0.5s ease;
 }
 
-.navigation__popup-opener:hover { 
+.navigation__popup-opener:hover {
     opacity: 0.8;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 768px) {
     .navigation__movies {
         visibility: hidden;
     }
@@ -103,8 +105,8 @@
         visibility: visible;
         position: relative;
     }
-    .active {
-        border-bottom: 2px solid #FFF;
+    .navigation__active {
+        border-bottom: 2px solid #fff;
         margin-bottom: 21px;
     }
 }
@@ -113,9 +115,9 @@
     .navigation__popup-opener {
         width: 22px;
         height: 32px;
-        bottom: 0;
+        bottom: 21px;
         left: 105%;
-        right: 14px;
+        right: 15px;
         position: absolute;
         background-size: 175%;
     }
@@ -124,5 +126,6 @@
 @media screen and (max-width: 350px) {
     .navigation__popup-opener {
         left: auto;
+        right: 14px;
     }
 }

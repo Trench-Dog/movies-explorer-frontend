@@ -7,7 +7,6 @@
 }
 
 .entrance-form__logo {
-    margin-left: 1px;
     width: 38px;
     height: 38px;
     cursor: pointer;
@@ -19,7 +18,7 @@
     font-weight: 500;
     font-size: 24px;
     line-height: 1.21;
-    color: #FFF;
+    color: #fff;
 }
 
 .entrance-form__content {
@@ -33,7 +32,7 @@
     font-weight: 400;
     font-size: 10px;
     line-height: 1.21;
-    color: #8B8B8B;
+    color: #8b8b8b;
     margin: 0;
 }
 
@@ -45,7 +44,7 @@
     border-right: none;
     border-bottom: 0.5px solid #424242;
     background-color: #202020;
-    color: #FFF;
+    color: #fff;
     font-weight: 400;
     font-size: 14px;
     line-height: 1.21;
@@ -53,8 +52,12 @@
     padding: 0 0 10px 0;
 }
 
+.entrance-form__data:focus {
+    border-bottom: 0.5px solid #4285f4;
+}
+
 .entrance-form__reminder {
-    color: #EE3465;
+    color: #ee3465;
     font-weight: 400;
     font-size: 10px;
     line-height: 1.21;
@@ -65,13 +68,13 @@
 .entrance-form__submit-button {
     width: 100%;
     height: 45px;
-    background: #4285F4;
+    background: #4285f4;
     border: none;
     border-radius: 5px;
     font-weight: 500;
     font-size: 14px;
     line-height: 1.21;
-    color: #FFF;
+    color: #fff;
     margin: auto 0 0;
     padding-right: 8px;
     cursor: pointer;
@@ -86,7 +89,7 @@
     font-weight: 400;
     font-size: 14px;
     line-height: 1.21;
-    color: #8B8B8B;
+    color: #8b8b8b;
     text-align: center;
     margin: 17px auto 0;
 }
@@ -96,7 +99,7 @@
     font-weight: 400;
     font-size: 14px;
     line-height: 1.21;
-    color: #4285F4;
+    color: #4285f4;
     margin-left: 3px;
     cursor: pointer;
     transition: opacity 0.5s ease;

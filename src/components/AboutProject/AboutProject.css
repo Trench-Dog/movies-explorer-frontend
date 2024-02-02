@@ -1,7 +1,7 @@
 .about-project {
     width: 100%;
     background: #202020;
-    height: 499px;
+    min-height: 499px;
     margin: 0;
     padding: 0;
 }
@@ -110,7 +110,7 @@
 
 @media screen and (max-width: 1000px) {
     .about-project {
-        height: 494px;
+        min-height: 494px;
     }
     .about-project__caption {
         width: 86.98%;
@@ -137,7 +137,7 @@
 
 @media screen and (max-width: 680px) {
     .about-project {
-        height: 572px;
+        min-height: 572px;
     }
     .about-project__caption {
         font-size: 18px;

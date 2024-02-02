@@ -1,7 +1,7 @@
 .about-me {
     width: 100%;
-    height: 968px;
-    margin: 0 auto 79px;
+    min-height: 968px;
+    margin: 0 auto 65px;
     padding-top: 110px;
     background: #202020;
 }
@@ -10,13 +10,13 @@
     font-weight: 400;
     font-size: 22px;
     line-height: 1.21;
-    color: #FFF;
+    color: #fff;
     padding: 0;
     width: 89.06%;
     min-height: 49px;
     letter-spacing: -0.04em;
     margin: 0 auto;
-    border-bottom: 1px solid #DADADA;
+    border-bottom: 1px solid #dadada;
 }
 
 .about-me__container {
@@ -31,7 +31,7 @@
 .about-me__info {
     display: flex;
     flex-direction: column;
-    color: #FFF;
+    color: #fff;
     width: 600px;
     padding: 0;
     align-items: flex-start;
@@ -64,7 +64,7 @@
 
 .about-me__link {
     text-decoration: none;
-    color: #FFF;
+    color: #fff;
     font-weight: 500;
     font-size: 14px;
     line-height: 1.21;

@@ -26,6 +26,7 @@ export default function Register() {
                 className="entrance-form__data"
                 name="name"
                 required
+                placeholder='Введите имя'
                 minLength="2"
                 maxLength="30"
                 value={name}

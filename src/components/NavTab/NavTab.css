@@ -5,7 +5,7 @@
     flex-direction: row;
     justify-content: space-between;
     width: 183px;
-    height: 32px;
+    min-height: 32px;
 }
 
 .navtab__registration {
@@ -13,7 +13,7 @@
     font-weight: 500;
     font-size: 12px;
     line-height: 1.33;
-    color: #FFF;
+    color: #fff;
     padding: 0;
     text-decoration: none;
     cursor: pointer;
@@ -21,7 +21,7 @@
 }
 
 .navtab__login {
-    background: #3DDC84;
+    background: #3ddc84;
     border-radius: 5px;
     border: none;
     width: 76px;
@@ -32,6 +32,11 @@
     line-height: 1.33;
     cursor: pointer;
     transition: opacity 0.5s ease;
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 .navtab__registration:hover {
@@ -51,18 +56,19 @@
 @media screen and (max-width: 680px) {
     .navtab {
         margin-right: 14px;
-        height: 26px;
+        min-height: 26px;
         width: 132px;
         margin-top: 24px;
     }
     .navtab__registration {
         font-size: 10px;
-        line-height: 1.6;        
+        line-height: 1.6;
+        margin-top: 5px;
     }
     .navtab__login {
         height: 26px;
         width: 54px;
         font-size: 10px;
-        line-height: 1.6; 
+        line-height: 1.6;
     }
 }

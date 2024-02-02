@@ -7,20 +7,18 @@ export default function Profile() {
             <section className='profile'>
                 <h1 className='profile__greeting'>Привет, Виталий!</h1>
                 <div className='profile__name'>
-                    <p classname='profile__name_caption'>Имя</p>
-                    <p className='profile__name_value'>Виталий</p>
+                    <p className='profile__name-caption'>Имя</p>
+                    <p className='profile__name-value'>Виталий</p>
                 </div>
                 <div className='profile__email'>
-                    <p classname='profile__email_caption'>E-mail</p>
-                    <p className='profile__email_value'>pochta@yandex.ru</p>
+                    <p className='profile__email-caption'>E-mail</p>
+                    <p className='profile__email-value'>pochta@yandex.ru</p>
                 </div>
                 <button type='button' className='profile__button profile__button_type_edit'>
                     Редактировать
                 </button>
-                <Link to='/'>
-                    <button type='button' className='profile__button profile__button_type_exit'>
+                <Link to='/' className='profile__button profile__button_type_exit'>
                         Выйти из аккаунта
-                    </button>
                 </Link>
             </section>
         </main>

@@ -1,7 +1,7 @@
 .profile {
     display: flex;
     flex-direction: column;
-    margin: 74px auto;
+    margin: 71px auto;
     width: 410px;
     padding: 0;
     text-align: center;
@@ -11,7 +11,7 @@
     font-weight: 500;
     font-size: 24px;
     line-height: 1.21;
-    color: #FFF;
+    color: #fff;
     margin: 0 2px 0 0;
 }
 
@@ -23,7 +23,7 @@
     font-weight: 400;
     font-size: 11px;
     line-height: 1.21;
-    color: #FFF;
+    color: #fff;
     margin: 113px 0 7px;
     padding-bottom: 5px;
 }
@@ -35,7 +35,7 @@
     font-weight: 400;
     font-size: 11px;
     line-height: 1.21;
-    color: #FFF;
+    color: #fff;
     margin: 0 0 208px;
 }
 
@@ -55,18 +55,23 @@
 
 .profile__button_type_edit {
     font-weight: 400;
-    color: #FFF;
+    color: #fff;
     margin-bottom: 15px;
 }
 
 .profile__button_type_exit {
     font-weight: 500;
-    color: #EE3465;
+    color: #ee3465;
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 @media screen and (max-width: 1000px) {
     .profile {
-        margin-top: 236px;
+        margin-top: 217px;
     }
     .profile__name {
         margin-top: 86px;
@@ -79,7 +84,7 @@
 @media screen and (max-width: 680px) {
     .profile {
         width: 81.25%;
-        margin-top: 70px;
+        margin-top: 49px;
     }
     .profile__greeting {
         margin: 0;

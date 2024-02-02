@@ -3,7 +3,7 @@
     margin: 0;
     padding: 0;
     background: #272727;
-    height: 525px;    
+    min-height: 525px;
     padding-top: 99px;
 }
 
@@ -11,24 +11,24 @@
     font-weight: 400;
     font-size: 22px;
     line-height: 1.21;
-    color: #FFF;
+    color: #fff;
     padding: 0;
     width: 89.06%;
     min-height: 49px;
     letter-spacing: -0.04em;
     margin: 0 auto;
-    border-bottom: 1px solid #DADADA;
+    border-bottom: 1px solid #dadada;
 }
 
 .technologies__title {
     font-weight: 400;
     font-size: 50px;
     line-height: 1.16;
-    color: #FFF;
+    color: #fff;
     letter-spacing: -0.04em;
     width: 46.87%;
     min-height: 58px;
-    text-align: center;    
+    text-align: center;
     margin: 90px auto 26px;
 }
 
@@ -36,7 +36,7 @@
     font-weight: 400;
     font-size: 14px;
     line-height: 1.43;
-    color: #FFF;
+    color: #fff;
     letter-spacing: -0.04em;
     width: 35.94%;
     min-height: 40px;
@@ -51,9 +51,9 @@
     justify-content: space-between;
     padding: 0;
     width: 53.91%;
-    height: 60px;
-    margin: 101px auto 99px;    
-    color: #FFF;
+    min-height: 60px;
+    margin: 101px auto 99px;
+    color: #fff;
 }
 
 .technologies__item {
@@ -64,7 +64,7 @@
     font-weight: 400;
     font-size: 14px;
     line-height: 1.21;
-    text-align: center;    
+    text-align: center;
     border-radius: 10px;
     letter-spacing: -0.04em;
 }
@@ -72,7 +72,7 @@
 @media screen and (max-width: 1000px) {
     .technologies {
         padding-top: 91px;
-        height: 476px;
+        min-height: 476px;
     }
     .technologies__caption {
         width: 86.98%;
@@ -83,12 +83,12 @@
     .technologies__description {
         font-size: 12px;
         line-height: 1.5;
-        width: 59.90%;
+        width: 59.9%;
     }
     .technologies__list {
         width: 84.38%;
         margin-top: 79px;
-        height: 57px;
+        min-height: 57px;
     }
     .technologies__item {
         width: 13%;
@@ -101,7 +101,7 @@
     .technologies {
         background: #202020;
         padding-top: 69px;
-        height: 550px;
+        min-height: 550px;
     }
     .technologies__caption {
         width: 88.75%;
@@ -121,7 +121,7 @@
     .technologies__list {
         width: 55.63%;
         margin-top: 42px;
-        height: 258px;
+        min-height: 258px;
         flex-flow: wrap;
     }
     .technologies__item {

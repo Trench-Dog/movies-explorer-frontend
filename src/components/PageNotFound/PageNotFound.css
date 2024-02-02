@@ -19,7 +19,7 @@
 }
 .not-found__back-button {
     width: 42px;
-    height: 17px;
+    min-height: 17px;
     background: none;
     border: none;
     color: #4285F4;
