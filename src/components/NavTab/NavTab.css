@@ -1,0 +1,74 @@
+.navtab {
+    margin: 21px 70px 21px auto;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 183px;
+    min-height: 32px;
+}
+
+.navtab__registration {
+    margin: auto auto auto 0;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 1.33;
+    color: #fff;
+    padding: 0;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.5s ease;
+}
+
+.navtab__login {
+    background: #3ddc84;
+    border-radius: 5px;
+    border: none;
+    width: 76px;
+    height: 32px;
+    color: black;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 1.33;
+    cursor: pointer;
+    transition: opacity 0.5s ease;
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.navtab__registration:hover {
+    opacity: 0.7;
+}
+
+.navtab__login:hover {
+    opacity: 0.8;
+}
+
+@media screen and (max-width: 1000px) {
+    .navtab {
+        margin-right: 30px;
+    }
+}
+
+@media screen and (max-width: 680px) {
+    .navtab {
+        margin-right: 14px;
+        min-height: 26px;
+        width: 132px;
+        margin-top: 24px;
+    }
+    .navtab__registration {
+        font-size: 10px;
+        line-height: 1.6;
+        margin-top: 5px;
+    }
+    .navtab__login {
+        height: 26px;
+        width: 54px;
+        font-size: 10px;
+        line-height: 1.6;
+    }
+}

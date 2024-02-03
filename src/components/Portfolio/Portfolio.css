@@ -1,0 +1,104 @@
+.portfolio {
+    width: 89.06%;
+    min-height: 454px;
+    margin: 0 auto;
+    padding-top: 20px;
+    background: #202020;
+}
+
+.portfolio__caption {
+    color: #8B8B8B;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.11;
+    margin-bottom: 50px;
+}
+
+.portfolio__link {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px solid #424242;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.67;
+    margin: 0 0 20px 0;
+}
+
+.portfolio__link-caption {
+    text-decoration: none;
+    color: #FFF;
+    width: 800px;
+    min-height: 50px;
+    margin: 0 231px 18px 1px;
+    letter-spacing: -0.04em;
+
+    cursor: pointer;
+    transition: opacity 0.5s ease;
+}
+
+.portfolio__link-arrow {
+    background: url('../../images/link-arrow.svg') no-repeat center;
+    width: 29px;
+    margin: 5px 0 19px 0;
+    cursor: pointer;
+    transition: opacity 0.5s ease;
+}
+
+.portfolio__link-caption:hover, .portfolio__link-arrow:hover {
+    opacity: 0.7;
+}
+
+@media screen and (max-width: 1000px) {
+    .portfolio {
+        width: 100%;
+    }
+    .portfolio__caption {
+        margin-bottom: 49px;
+    }
+    .portfolio__link {
+        font-size: 28px;
+        line-height: 1.79;
+        margin-bottom: 21px;
+        border-bottom: 1px solid #E6E6E6;
+    }
+    .portfolio__link-caption {
+        width: 600px;
+        margin: 0 auto 18px 0;
+    }
+    .portfolio__link-arrow {
+        width: 27px;
+        background-size: 62%;
+    }
+}
+@media screen and (max-width: 680px) {
+    .portfolio {
+        padding-top: 18px;
+        min-height: 300px
+    }
+    .portfolio__caption {
+        margin-bottom: 41px;
+        font-size: 14px;
+        line-height: 1.43;
+    }
+    .portfolio__link {
+        font-size: 18px;
+        line-height: 1.55;
+    }
+    .portfolio__link-caption {
+        min-height: 46px;
+        width: 250px;
+        margin: 0 auto 0 0;
+    }
+    .portfolio__link-arrow {
+        width: 18px;
+        background-size: 62%;
+        margin-top: 0;
+        padding-top: 0;
+        background-size: 60%;
+        background-position: 3px 7px;
+    } 
+}
+.portfolio__link_no-border {
+    border: none;
+}

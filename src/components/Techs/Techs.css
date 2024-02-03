@@ -1,0 +1,134 @@
+.technologies {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #272727;
+    min-height: 525px;
+    padding-top: 99px;
+}
+
+.technologies__caption {
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.21;
+    color: #fff;
+    padding: 0;
+    width: 89.06%;
+    min-height: 49px;
+    letter-spacing: -0.04em;
+    margin: 0 auto;
+    border-bottom: 1px solid #dadada;
+}
+
+.technologies__title {
+    font-weight: 400;
+    font-size: 50px;
+    line-height: 1.16;
+    color: #fff;
+    letter-spacing: -0.04em;
+    width: 46.87%;
+    min-height: 58px;
+    text-align: center;
+    margin: 90px auto 26px;
+}
+
+.technologies__description {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.43;
+    color: #fff;
+    letter-spacing: -0.04em;
+    width: 35.94%;
+    min-height: 40px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.technologies__list {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0;
+    width: 53.91%;
+    min-height: 60px;
+    margin: 101px auto 99px;
+    color: #fff;
+}
+
+.technologies__item {
+    width: 13%;
+    padding-top: 21px;
+    background: #303030;
+    border: 0;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.21;
+    text-align: center;
+    border-radius: 10px;
+    letter-spacing: -0.04em;
+}
+
+@media screen and (max-width: 1000px) {
+    .technologies {
+        padding-top: 91px;
+        min-height: 476px;
+    }
+    .technologies__caption {
+        width: 86.98%;
+    }
+    .technologies__title {
+        margin: 80px auto 22px;
+    }
+    .technologies__description {
+        font-size: 12px;
+        line-height: 1.5;
+        width: 59.9%;
+    }
+    .technologies__list {
+        width: 84.38%;
+        margin-top: 79px;
+        min-height: 57px;
+    }
+    .technologies__item {
+        width: 13%;
+        font-size: 12px;
+        padding-top: 22px;
+    }
+}
+
+@media screen and (max-width: 680px) {
+    .technologies {
+        background: #202020;
+        padding-top: 69px;
+        min-height: 550px;
+    }
+    .technologies__caption {
+        width: 88.75%;
+        font-size: 18px;
+        border-bottom: 1px solid #000;
+    }
+    .technologies__title {
+        margin: 60px auto 2px;
+        width: 88.75%;
+        font-size: 30px;
+        line-height: 1.21;
+    }
+    .technologies__description {
+        width: 88.75%;
+        font-size: 11px;
+    }
+    .technologies__list {
+        width: 55.63%;
+        margin-top: 42px;
+        min-height: 258px;
+        flex-flow: wrap;
+    }
+    .technologies__item {
+        width: 47%;
+        font-size: 12px;
+        padding-top: 22px;
+        height: 35px;
+        margin-bottom: 10px;
+    }
+}

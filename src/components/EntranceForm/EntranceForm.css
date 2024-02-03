@@ -1,0 +1,142 @@
+.entrance-form {
+    width: 100%;
+    background: #202020;
+    width: 396px;
+    margin: 0 auto;
+    padding-top: 70px;
+}
+
+.entrance-form__logo {
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+}
+
+.entrance-form__title {
+    width: 100%;
+    margin: 37px 0;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 1.21;
+    color: #fff;
+}
+
+.entrance-form__content {
+    display: flex;
+    flex-direction: column;
+    padding-top: 3px;
+    min-height: 380px;
+}
+
+.entrance-form__input-name {
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 1.21;
+    color: #8b8b8b;
+    margin: 0;
+}
+
+.entrance-form__data {
+    outline: none;
+    appearance: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 0.5px solid #424242;
+    background-color: #202020;
+    color: #fff;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.21;
+    margin: 5px 0 0;
+    padding: 0 0 10px 0;
+}
+
+.entrance-form__data:focus {
+    border-bottom: 0.5px solid #4285f4;
+}
+
+.entrance-form__reminder {
+    color: #ee3465;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 1.21;
+    margin: 6px 0;
+    min-height: 12px;
+}
+
+.entrance-form__submit-button {
+    width: 100%;
+    height: 45px;
+    background: #4285f4;
+    border: none;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.21;
+    color: #fff;
+    margin: auto 0 0;
+    padding-right: 8px;
+    cursor: pointer;
+    transition: opacity 0.5s ease;
+}
+
+.entrance-form__submit-button:hover {
+    opacity: 0.8;
+}
+
+.entrance-form__confirmation {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.21;
+    color: #8b8b8b;
+    text-align: center;
+    margin: 17px auto 0;
+}
+
+.entrance-form__link {
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.21;
+    color: #4285f4;
+    margin-left: 3px;
+    cursor: pointer;
+    transition: opacity 0.5s ease;
+}
+
+.entrance-form__link:hover {
+    opacity: 0.7;
+}
+
+@media screen and (max-width: 1000px) {
+    .entrance-form {
+        padding-top: 232px;
+    }
+}
+
+@media screen and (max-width: 520px) {
+    .entrance-form {
+        padding-top: 56px;
+        width: 81.25%;
+        text-align: center;
+    }
+    .entrance-form__title {
+        margin: 47px 0 77px;
+    }
+    .entrance-form__content {
+        text-align: start;
+        min-height: 468px;
+    }
+    .entrance-form__submit-button {
+        font-size: 12px;
+    }
+    .entrance-form__confirmation {
+        font-size: 12px;
+        margin: 15px auto 0 1px;
+    }
+    .entrance-form__link {
+        font-size: 12px;
+        margin-left: 4px;
+    }
+}
