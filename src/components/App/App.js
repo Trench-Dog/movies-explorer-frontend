@@ -10,19 +10,84 @@ import Movies from '../Movies/Movies';
 import SavedMovies from '../SavedMovies/SavedMovies';
 import NavigationPopup from '../NavigationPopup/NavigationPopup';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { mainApi } from '../../utils/MainApi';
+import { moviesApi } from '../../utils/MoviesApi';
 
 export default function App() {
     const isLoggedIn = true;
     const navigate = useNavigate();
 
-    const [isNavigationPopupOpen, setisNavigationPopupOpen] = useState(false);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [preloaderActive, setPreloaderActive] = useState(false);
+    const [allMovies, setAllMovies] = useState([]);
+    const [notFound, setNotFound] = useState(false);
+    const [foundMovies, setFoundMovies] = useState([]);
+    const [savedMovies, setSavedMovies] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
+
+    function handleMovieSearch(movie) {
+        setNotFound(false);
+        if (allMovies.length === 0) {
+            setPreloaderActive(true);
+            moviesApi
+                .getMovies()
+                .then(movies => {
+                    const searchedMovies = movies.filter(
+                        item =>
+                            item.nameRU.toLowerCase().includes(movie.toLowerCase()) ||
+                            item.nameEN.toLowerCase().includes(movie.toLowerCase())
+                    );
+                    if (searchedMovies.length === 0) {
+                        setNotFound(true);
+                    } else {
+                        setAllMovies(movies);
+                        setFoundMovies(searchedMovies);
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+                .finally(() => {
+                    setIsSearching(false);
+                    setPreloaderActive(false);
+                });
+        } else {
+            const searchedMovies = allMovies.filter(
+                item =>
+                    item.nameRU.toLowerCase().includes(movie.toLowerCase()) ||
+                    item.nameEN.toLowerCase().includes(movie.toLowerCase())
+            );
+            if (searchedMovies.length === 0) {
+                setNotFound(true);
+            } else {
+                setFoundMovies(searchedMovies);
+            }
+        }
+    }
+
+    function saveMovie(movie) {
+        mainApi.createNewMovie(movie).then(movie => {
+            setSavedMovies(savedMovies.concat(movie));
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
+    function deleteMovie(movie) {
+        mainApi.deleteMovie(movie._id).then(() => {
+            setSavedMovies(savedMovies.splice(savedMovies.findIndex(item => item._id === movie._id)));
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
     function handlePopupOpen() {
-        setisNavigationPopupOpen(true);
+        setIsPopupOpen(true);
     }
 
     function closePopup() {
-        setisNavigationPopupOpen(false);
+        setIsPopupOpen(false);
     }
 
     return (
@@ -68,7 +133,16 @@ export default function App() {
                                 color='black'
                                 activeRoute='movies'
                             />
-                            <Movies />
+                            <Movies
+                                preloaderActive={preloaderActive}
+                                notFound={notFound}
+                                isSearching={isSearching}
+                                onSearch={handleMovieSearch}
+                                foundMovies={foundMovies}
+                                onSave={saveMovie}
+                                onDelete={deleteMovie}
+                                savedMovies={savedMovies}
+                            />
                             <Footer />
                         </>
                     }
@@ -83,14 +157,14 @@ export default function App() {
                                 color='black'
                                 activeRoute='saved-movies'
                             />
-                            <SavedMovies />
+                            <SavedMovies preloaderActive={preloaderActive} savedMovies={savedMovies} />
                             <Footer />
                         </>
                     }
                 />
                 <Route path='*' element={<PageNotFound navigate={navigate} />} />
             </Routes>
-            <NavigationPopup isOpen={isNavigationPopupOpen} onClose={closePopup} />
+            <NavigationPopup isOpen={isPopupOpen} onClose={closePopup} />
         </div>
     );
 }

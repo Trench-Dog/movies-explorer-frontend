@@ -1,15 +1,15 @@
-// import Preloader from '../Preloader/Preloader';
+import Preloader from '../Preloader/Preloader';
 import SearchForm from '../SearchForm/SearchForm';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import deleteMovieIcon from '../../images/delete-movie-icon.svg';
 import './SavedMovies.css';
 
-export default function SavedMovies() {
+export default function SavedMovies(props) {
     return (
         <main>
             <section className='saved-movies'>
                 <SearchForm />
-                <MoviesCardList icon={deleteMovieIcon} />
+                {props.preloaderActive ? <Preloader /> : <MoviesCardList icon={deleteMovieIcon} />}
             </section>
         </main>
     );

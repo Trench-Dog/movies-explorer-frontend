@@ -1,109 +1,87 @@
 import './MoviesCardList.css';
-import testMovieCover from '../../images/test-movie-cover.jpg';
 import MoviesCard from '../MoviesCard/MoviesCard';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export default function MoviesCardList(props) {
+    const location = useLocation();
+    const [resolution, setResolution] = useState(1280);
+    const [renderedMovies, setRenderedMovies] = useState([]);
+    const [maxMovieNumber, setMaxMovieNumber] = useState(16);
+
+    useEffect(() => {
+        renderMovies();
+    }, [maxMovieNumber]);
+
+    useEffect(() => {
+        if (resolution <= 620) {
+            setInitialMovieNumber(5);
+        } else if (resolution < 769) {
+            setInitialMovieNumber(8);
+        } else if (resolution < 1001) {
+            setInitialMovieNumber(12);
+        } else if (resolution >= 1001) {
+            setInitialMovieNumber(16);
+        }
+    }, [props.foundMovies, resolution]);
+
+    useEffect(() => {
+        window.onresize = () => {
+            setTimeout(handleResize, 1000);
+        };
+    }, []);
+
+    function renderMovies() {
+        let movies = [];
+        props.foundMovies.forEach((item, i) => {
+            if (i < maxMovieNumber) {
+                movies.push(item);
+            }
+        });
+        setRenderedMovies(movies);
+    }
+
+    function setInitialMovieNumber(number) {
+        setMaxMovieNumber(number);
+        let movies = [];
+        props.foundMovies.forEach((item, i) => {
+            if (i < number) {
+                movies.push(item);
+            }
+        });
+        setRenderedMovies(movies);
+    }
+
+    function handleResize() {
+        setResolution(window.innerWidth);
+    }
+
+    function handleAddMovies() {
+        if (resolution <= 620) {
+            setMaxMovieNumber(maxMovieNumber + 2);
+        } else if (resolution < 769) {
+            setMaxMovieNumber(maxMovieNumber + 2);
+        } else if (resolution < 1001) {
+            setMaxMovieNumber(maxMovieNumber + 3);
+        } else if (resolution >= 1001) {
+            setMaxMovieNumber(maxMovieNumber + 4);
+        }
+    }
+
     return (
         <section className='movies-list'>
             <ul className='movies-list__container'>
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='33 слова о дизайне'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='Киноальманах «100 лет дизайна»'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='В погоне за Бенкси'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='Баския: Взрыв реальности'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='Бег это свобода'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='Книготорговцы'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='Когда я думаю о Германии ночью'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='Gimme Danger: История Игги и The Stooges'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='33 слова о дизайне'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='Киноальманах «100 лет дизайна»'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='В погоне за Бенкси'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='Баския: Взрыв реальности'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='Бег это свобода'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='Книготорговцы'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='Когда я думаю о Германии ночью'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
-                <MoviesCard
-                    duration='1ч 42м'
-                    title='Gimme Danger: История Игги и The Stooges'
-                    cover={testMovieCover}
-                    icon={props.icon}
-                />
+                {renderedMovies.map(movie => (
+                    <MoviesCard key={movie.id} movie={movie} icon={props.icon} onSave={props.onSave} onDelete={props.onDelete} savedMovies={props.savedMovies} />
+                ))}
             </ul>
-            {props.children}
+            {location.pathname === '/movies' ? (
+                <button className='movies-list__add-button' onClick={handleAddMovies}>
+                    Ещё
+                </button>
+            ) : (
+                ''
+            )}
         </section>
     );
 }
