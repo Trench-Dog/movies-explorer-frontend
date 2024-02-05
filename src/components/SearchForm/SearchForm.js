@@ -1,26 +1,40 @@
 import './SearchForm.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export default function SearchForm(props) {
+    const location = useLocation();
+
     const [inputValue, setInputValue] = useState('');
     const [inputError, setInputError] = useState('');
+    const [checkbox, setCheckbox] = useState(false);
+
+    useEffect(() => {
+        if (location.pathname === '/movies') {
+            setInputValue(localStorage.getItem('searchValue'));
+            setCheckbox(JSON.parse(localStorage.getItem('checkboxActive')));
+        }
+    }, [location]);
+
     function handleInputChange(evt) {
         setInputValue(evt.target.value);
         if (evt.target.value !== 0) {
             setInputError('');
         }
     }
-    const [checkbox, setCheckbox] = useState(false);
+
     function handleCheckbox() {
         setCheckbox(!checkbox);
+        props.onCheckboxClick(!checkbox);        
     }
+
     function handleSubmit(evt) {
         evt.preventDefault();
         if (inputValue) {
-            props.onSearch(inputValue);
+            props.onSearch(inputValue, checkbox);
         } else {
             setInputError('Введите название фильма');
-        };
+        }
     }
 
     return (
@@ -49,7 +63,7 @@ export default function SearchForm(props) {
                         className='search__checkbox'
                         type='checkbox'
                         onChange={handleCheckbox}
-                        checked={checkbox}
+                        checked={checkbox ? true : false}
                     />
                     <span className='search__checkbox-toggler'></span>
                     <p className='search__checkbox-caption'>Короткометражки</p>

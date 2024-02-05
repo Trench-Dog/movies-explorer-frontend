@@ -13,6 +13,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { mainApi } from '../../utils/MainApi';
 import { moviesApi } from '../../utils/MoviesApi';
+import * as authApi from '../../utils/AuthApi';
 
 export default function App() {
     const isLoggedIn = true;
@@ -24,15 +25,50 @@ export default function App() {
     const [notFound, setNotFound] = useState(false);
     const [foundMovies, setFoundMovies] = useState([]);
     const [savedMovies, setSavedMovies] = useState([]);
+    const [savedMoviesBackup, setSavedMoviesBackup] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-    function handleMovieSearch(movie) {
+    function handleRegister(name, email, password) {
+        setIsLoading(true);
+        authApi
+            .register(name, email, password)
+            .then(res => {
+                if (res) {
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }
+
+    function handleLogin(email, password) {
+        setIsLoading(true);
+        authApi
+            .login(email, password)
+            .then(res => {
+                if (res.token) {
+                    localStorage.setItem('jwt', res.token);
+                }
+            })
+            .catch(err => {
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }
+
+    function handleMovieSearch(movie, checkbox) {
         setNotFound(false);
         if (allMovies.length === 0) {
             setPreloaderActive(true);
             moviesApi
                 .getMovies()
                 .then(movies => {
+                    console.log(movies);
                     const searchedMovies = movies.filter(
                         item =>
                             item.nameRU.toLowerCase().includes(movie.toLowerCase()) ||
@@ -41,6 +77,10 @@ export default function App() {
                     if (searchedMovies.length === 0) {
                         setNotFound(true);
                     } else {
+                        localStorage.setItem('allMovies', JSON.stringify(movies));
+                        localStorage.setItem('searchedMovies', JSON.stringify(searchedMovies));
+                        localStorage.setItem('searchValue', movie);
+                        localStorage.setItem('checkboxActive', checkbox);
                         setAllMovies(movies);
                         setFoundMovies(searchedMovies);
                     }
@@ -61,25 +101,53 @@ export default function App() {
             if (searchedMovies.length === 0) {
                 setNotFound(true);
             } else {
+                localStorage.setItem('searchValue', movie);
+                localStorage.setItem('searchedMovies', JSON.stringify(searchedMovies));
+                localStorage.setItem('checkboxActive', JSON.stringify(checkbox));
                 setFoundMovies(searchedMovies);
             }
         }
     }
 
+    function handleSavedMovieSearch(movie, checkbox) {
+        setNotFound(false);
+        setPreloaderActive(true);
+        const searchedSavedMovies = savedMovies.filter(item =>
+            item.nameRU.toLowerCase().includes(movie.toLowerCase()) ||
+            item.nameEN.toLowerCase().includes(movie.toLowerCase())
+        );
+        if (searchedSavedMovies.length === 0) {
+            setNotFound(true);
+        } else {
+            localStorage.setItem('checkboxActive', JSON.stringify(checkbox));
+            setSavedMovies(searchedSavedMovies);
+        }
+    }
+
     function saveMovie(movie) {
-        mainApi.createNewMovie(movie).then(movie => {
-            setSavedMovies(savedMovies.concat(movie));
-        }).catch(err => {
-            console.log(err);
-        });
+        mainApi
+            .saveMovie(movie)
+            .then(movie => {
+                setSavedMovies(savedMovies.concat(movie));
+                setSavedMoviesBackup(savedMovies);
+            })
+            .catch(err => {
+                console.log(err);
+            });
     }
 
     function deleteMovie(movie) {
-        mainApi.deleteMovie(movie._id).then(() => {
-            setSavedMovies(savedMovies.splice(savedMovies.findIndex(item => item._id === movie._id)));
-        }).catch(err => {
-            console.log(err);
-        });
+        mainApi
+            .deleteMovie(movie._id)
+            .then(() => {
+                setSavedMovies(
+                    savedMovies.splice(savedMovies.findIndex(item => item._id === movie._id))
+                );
+                setSavedMoviesBackup(savedMovies);
+            })
+            .catch(err => {
+                console.log(err);
+            });
     }
 
     function handlePopupOpen() {
@@ -88,6 +156,28 @@ export default function App() {
 
     function closePopup() {
         setIsPopupOpen(false);
+    }
+
+    function handleCheckbox(active) {
+        let searchedMovies = JSON.parse(localStorage.getItem('searchedMovies'));
+        let shortMovies;
+        if (active) {
+            shortMovies = searchedMovies.filter(movie => movie.duration <= 40);
+        } else {
+            shortMovies = searchedMovies;
+        }
+        localStorage.setItem('checkboxActive', JSON.stringify(active));
+        setFoundMovies(shortMovies);
+    }
+
+    function handleSavedMoviesCheckbox(active) {
+        if (active) {
+            let shortSavedMovies = savedMovies.filter(movie => movie.duration <= 40);
+            setSavedMovies(shortSavedMovies);
+        } else {
+            setSavedMovies(savedMoviesBackup);
+        }
+        localStorage.setItem('checkboxActive', JSON.stringify(active));
     }
 
     return (
@@ -107,8 +197,8 @@ export default function App() {
                         </>
                     }
                 />
-                <Route path='/sign-up' element={<Register />} />
-                <Route path='/sign-in' element={<Login />} />
+                <Route path='/sign-up' element={<Register isLoading={isLoading} />} />
+                <Route path='/sign-in' element={<Login isLoading={isLoading} />} />
                 <Route
                     path='/profile'
                     element={
@@ -119,7 +209,7 @@ export default function App() {
                                 color='black'
                                 activeRoute='profile'
                             />
-                            <Profile />
+                            <Profile isLoading={isLoading} />
                         </>
                     }
                 />
@@ -142,6 +232,7 @@ export default function App() {
                                 onSave={saveMovie}
                                 onDelete={deleteMovie}
                                 savedMovies={savedMovies}
+                                onCheckboxClick={handleCheckbox}
                             />
                             <Footer />
                         </>
@@ -157,7 +248,17 @@ export default function App() {
                                 color='black'
                                 activeRoute='saved-movies'
                             />
-                            <SavedMovies preloaderActive={preloaderActive} savedMovies={savedMovies} />
+                            <SavedMovies
+                                preloaderActive={preloaderActive}
+                                savedMovies={savedMovies}
+                                onCheckboxClick={handleSavedMoviesCheckbox}
+                                onSave={saveMovie}
+                                onDelete={deleteMovie}
+                                notFound={notFound}
+                                foundMovies={savedMovies}
+                                isSearching={isSearching}
+                                onSearch={handleSavedMovieSearch}
+                            />
                             <Footer />
                         </>
                     }

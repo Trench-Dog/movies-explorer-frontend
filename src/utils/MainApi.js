@@ -48,7 +48,7 @@ class MainApi {
         });
     }
 
-    createNewMovie(movie) {
+    saveMovie(movie) {
         return fetch(`${this._baseUrl}/movies`, {
             method: 'POST',
             headers: {
