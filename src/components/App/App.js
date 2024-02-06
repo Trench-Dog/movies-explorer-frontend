@@ -9,17 +9,20 @@ import Profile from '../Profile/Profile';
 import Movies from '../Movies/Movies';
 import SavedMovies from '../SavedMovies/SavedMovies';
 import NavigationPopup from '../NavigationPopup/NavigationPopup';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import InfoTooltip from '../InfoTooltip/InfoTooltip';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { mainApi } from '../../utils/MainApi';
 import { moviesApi } from '../../utils/MoviesApi';
 import * as authApi from '../../utils/AuthApi';
 
 export default function App() {
-    const isLoggedIn = true;
     const navigate = useNavigate();
 
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [isNavPopupOpen, setIsNavPopupOpen] = useState(false);
+    const [isStatusPopupOpen, setIsStatusPopupOpen] = useState(false);
     const [preloaderActive, setPreloaderActive] = useState(false);
     const [allMovies, setAllMovies] = useState([]);
     const [notFound, setNotFound] = useState(false);
@@ -28,6 +31,30 @@ export default function App() {
     const [savedMoviesBackup, setSavedMoviesBackup] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [currentUser, setCurrentUser] = useState({
+        _id: '',
+        name: '',
+        email: ''
+      });
+
+    useEffect(() => {
+        function onPushEsc(evt) {
+            if (evt.key === 'Escape') {
+                closePopups();
+            }
+        }
+        if (isNavPopupOpen || isStatusPopupOpen) {
+            document.addEventListener('keydown', onPushEsc);
+        } else {
+            document.removeEventListener('keydown', onPushEsc);
+        }
+    }, [isNavPopupOpen, isStatusPopupOpen]);
+
+    useEffect(() => {
+        handleTokenCheck();
+    }, []);
 
     function handleRegister(name, email, password) {
         setIsLoading(true);
@@ -35,9 +62,14 @@ export default function App() {
             .register(name, email, password)
             .then(res => {
                 if (res) {
+                    console.log(res);
+                    setIsSuccess(true);
+                    handleStatusPopupOpen();
                 }
             })
-            .catch(err => {
+            .catch(err => {                
+                setIsSuccess(false);
+                handleStatusPopupOpen();
                 console.log(err);
             })
             .finally(() => {
@@ -52,18 +84,46 @@ export default function App() {
             .then(res => {
                 if (res.token) {
                     localStorage.setItem('jwt', res.token);
+                    setIsLoggedIn(true);
                 }
             })
             .catch(err => {
+                setIsSuccess(false);
+                handleStatusPopupOpen();
+                console.log(err);
             })
             .finally(() => {
                 setIsLoading(false);
             });
     }
 
+    function handleTokenCheck() {
+        const jwt = localStorage.getItem('jwt');
+        if (jwt) {
+            authApi.checkToken(jwt).then(res => {
+                if (res) {
+                    setIsLoggedIn(true);
+                }
+            });
+        }
+    }
+
+    function signOut() {
+        setIsLoggedIn(false);
+        setAllMovies([]);
+        setFoundMovies([]);
+        setSavedMovies([]);
+        setSavedMoviesBackup([]);
+        localStorage.removeItem('jwt');
+        navigate('/sign-in');
+    }
+
     function handleMovieSearch(movie, checkbox) {
+        setPreloaderActive(false);
         setNotFound(false);
+        setIsSearching(true);
         if (allMovies.length === 0) {
+            console.log('no allmovies');
             setPreloaderActive(true);
             moviesApi
                 .getMovies()
@@ -75,6 +135,7 @@ export default function App() {
                             item.nameEN.toLowerCase().includes(movie.toLowerCase())
                     );
                     if (searchedMovies.length === 0) {
+                        console.log('no searched movies');
                         setNotFound(true);
                     } else {
                         localStorage.setItem('allMovies', JSON.stringify(movies));
@@ -83,6 +144,7 @@ export default function App() {
                         localStorage.setItem('checkboxActive', checkbox);
                         setAllMovies(movies);
                         setFoundMovies(searchedMovies);
+                        setPreloaderActive(false);
                     }
                 })
                 .catch(err => {
@@ -90,7 +152,6 @@ export default function App() {
                 })
                 .finally(() => {
                     setIsSearching(false);
-                    setPreloaderActive(false);
                 });
         } else {
             const searchedMovies = allMovies.filter(
@@ -112,9 +173,11 @@ export default function App() {
     function handleSavedMovieSearch(movie, checkbox) {
         setNotFound(false);
         setPreloaderActive(true);
-        const searchedSavedMovies = savedMovies.filter(item =>
-            item.nameRU.toLowerCase().includes(movie.toLowerCase()) ||
-            item.nameEN.toLowerCase().includes(movie.toLowerCase())
+        setIsSearching(true);
+        const searchedSavedMovies = savedMovies.filter(
+            item =>
+                item.nameRU.toLowerCase().includes(movie.toLowerCase()) ||
+                item.nameEN.toLowerCase().includes(movie.toLowerCase())
         );
         if (searchedSavedMovies.length === 0) {
             setNotFound(true);
@@ -150,12 +213,17 @@ export default function App() {
             });
     }
 
-    function handlePopupOpen() {
-        setIsPopupOpen(true);
+    function handleNavPopupOpen() {
+        setIsNavPopupOpen(true);
     }
 
-    function closePopup() {
-        setIsPopupOpen(false);
+    function handleStatusPopupOpen() {
+        setIsStatusPopupOpen(true);
+    }
+
+    function closePopups() {
+        setIsNavPopupOpen(false);
+        setIsStatusPopupOpen(false);
     }
 
     function handleCheckbox(active) {
@@ -181,6 +249,7 @@ export default function App() {
     }
 
     return (
+        <CurrentUserContext.Provider value={currentUser}>
         <div className='page'>
             <Routes>
                 <Route
@@ -189,7 +258,7 @@ export default function App() {
                         <>
                             <Header
                                 isLoggedIn={isLoggedIn}
-                                openPopup={handlePopupOpen}
+                                openPopup={handleNavPopupOpen}
                                 color='blue'
                             />
                             <Main />
@@ -197,29 +266,43 @@ export default function App() {
                         </>
                     }
                 />
-                <Route path='/sign-up' element={<Register isLoading={isLoading} />} />
-                <Route path='/sign-in' element={<Login isLoading={isLoading} />} />
+                <Route
+                    path='/sign-up'
+                    element={isLoggedIn ? (
+                        <Navigate to="/" />
+                    ) : (
+                    <Register isLoading={isLoading} isSuccess={isSuccess} onSubmit={handleRegister} />
+                    )}
+                />
+                <Route
+                    path='/sign-in'
+                    element={isLoggedIn ? (
+                        <Navigate to="/" />
+                    ) : (
+                    <Login isLoading={isLoading} isSuccess={isSuccess} onSubmit={handleLogin} />
+                    )}
+                />
                 <Route
                     path='/profile'
                     element={
-                        <>
+                        <ProtectedRoute isLoggedIn={isLoggedIn}>
                             <Header
                                 isLoggedIn={isLoggedIn}
-                                openPopup={handlePopupOpen}
+                                openPopup={handleNavPopupOpen}
                                 color='black'
                                 activeRoute='profile'
                             />
                             <Profile isLoading={isLoading} />
-                        </>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path='/movies'
                     element={
-                        <>
+                        <ProtectedRoute isLoggedIn={isLoggedIn}>
                             <Header
                                 isLoggedIn={isLoggedIn}
-                                openPopup={handlePopupOpen}
+                                openPopup={handleNavPopupOpen}
                                 color='black'
                                 activeRoute='movies'
                             />
@@ -235,16 +318,16 @@ export default function App() {
                                 onCheckboxClick={handleCheckbox}
                             />
                             <Footer />
-                        </>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path='/saved-movies'
                     element={
-                        <>
+                        <ProtectedRoute isLoggedIn={isLoggedIn}>
                             <Header
                                 isLoggedIn={isLoggedIn}
-                                openPopup={handlePopupOpen}
+                                openPopup={handleNavPopupOpen}
                                 color='black'
                                 activeRoute='saved-movies'
                             />
@@ -260,12 +343,20 @@ export default function App() {
                                 onSearch={handleSavedMovieSearch}
                             />
                             <Footer />
-                        </>
+                        </ProtectedRoute>
                     }
                 />
                 <Route path='*' element={<PageNotFound navigate={navigate} />} />
             </Routes>
-            <NavigationPopup isOpen={isPopupOpen} onClose={closePopup} />
+            <NavigationPopup isOpen={isNavPopupOpen} onClose={closePopups} />
+            <InfoTooltip
+                isSuccess={isSuccess} 
+                errorText={'Что-то пошло не так! Попробуйте ещё раз.'}
+                successText={'Вы успешно зарегистрировались!'}
+                onClose={closePopups}
+                isOpen={isStatusPopupOpen}
+            />
         </div>
+        </CurrentUserContext.Provider>
     );
 }

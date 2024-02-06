@@ -17,6 +17,7 @@ export function register(name, email, password) {
             password: password
         })
     }).then(res => {
+        console.log(res);
         return getResponseData(res);
     });
 };

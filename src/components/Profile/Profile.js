@@ -1,7 +1,12 @@
 import './Profile.css';
 import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
 export default function Profile() {
+
+    const currentUser = useContext(CurrentUserContext);
+
     return (
         <main>
             <section className='profile'>

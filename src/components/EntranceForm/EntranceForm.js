@@ -2,16 +2,30 @@ import './EntranceForm.css';
 import { Link } from 'react-router-dom';
 import projectLogo from '../../images/project-logo.svg';
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export default function EntranceForm(props) {
+    const location = useLocation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [disabled, setDisabled] = useState(false);
     function handleEmailChange(evt) {
         setEmail(evt.target.value);
     }
     function handlePasswordChange(evt) {
         setPassword(evt.target.value);
     }
+    function handleSubmit(evt) {
+        evt.preventDefault();
+        if (location.pathname === '/sign-up') {
+            console.log(props.name, email, password);
+            props.onSubmit(props.name, email, password);
+        } else if (location.pathname === '/sign-in') {
+            console.log(email, password);
+            props.onSubmit(email, password);
+        }
+    }
+
     return (
         <main>
             <section className='entrance-form'>
@@ -46,8 +60,13 @@ export default function EntranceForm(props) {
                         value={password}
                         onChange={handlePasswordChange}
                     />
-                    <span className='entrance-form__reminder'>Что-то пошло не так...</span>
-                    <button className='entrance-form__submit-button' type='submit'>
+                    <span className='entrance-form__reminder'></span>
+                    <button
+                        className='entrance-form__submit-button'
+                        type='submit'
+                        onSubmit={handleSubmit}
+                        disabled={disabled}
+                    >
                         {props.text}
                     </button>
                 </form>
