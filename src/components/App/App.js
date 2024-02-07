@@ -14,6 +14,7 @@ import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+
 import { mainApi } from '../../utils/MainApi';
 import { moviesApi } from '../../utils/MoviesApi';
 import * as authApi from '../../utils/AuthApi';
@@ -37,7 +38,7 @@ export default function App() {
         _id: '',
         name: '',
         email: ''
-      });
+    });
 
     useEffect(() => {
         function onPushEsc(evt) {
@@ -52,22 +53,20 @@ export default function App() {
         }
     }, [isNavPopupOpen, isStatusPopupOpen]);
 
-    useEffect(() => {
-        handleTokenCheck();
-    }, []);
+    // useEffect(() => {
+    //     handleTokenCheck();
+    // }, []);
 
-    function handleRegister(name, email, password) {
+    function handleRegister(email, password, name) {
         setIsLoading(true);
-        authApi
-            .register(name, email, password)
+        authApi.register(email, password, name)
             .then(res => {
                 if (res) {
-                    console.log(res);
                     setIsSuccess(true);
                     handleStatusPopupOpen();
                 }
             })
-            .catch(err => {                
+            .catch(err => {
                 setIsSuccess(false);
                 handleStatusPopupOpen();
                 console.log(err);
@@ -92,6 +91,19 @@ export default function App() {
                 handleStatusPopupOpen();
                 console.log(err);
             })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }
+
+    function handleEditProfile(name, email) {
+        setIsLoading(true);
+        mainApi
+            .editUserInfo(name, email)
+            .then(user => {
+                setCurrentUser(user);
+            })
+            .catch(err => alert(err))
             .finally(() => {
                 setIsLoading(false);
             });
@@ -123,7 +135,6 @@ export default function App() {
         setNotFound(false);
         setIsSearching(true);
         if (allMovies.length === 0) {
-            console.log('no allmovies');
             setPreloaderActive(true);
             moviesApi
                 .getMovies()
@@ -135,7 +146,6 @@ export default function App() {
                             item.nameEN.toLowerCase().includes(movie.toLowerCase())
                     );
                     if (searchedMovies.length === 0) {
-                        console.log('no searched movies');
                         setNotFound(true);
                     } else {
                         localStorage.setItem('allMovies', JSON.stringify(movies));
@@ -250,113 +260,129 @@ export default function App() {
 
     return (
         <CurrentUserContext.Provider value={currentUser}>
-        <div className='page'>
-            <Routes>
-                <Route
-                    path='/'
-                    element={
-                        <>
-                            <Header
-                                isLoggedIn={isLoggedIn}
-                                openPopup={handleNavPopupOpen}
-                                color='blue'
-                            />
-                            <Main />
-                            <Footer />
-                        </>
-                    }
+            <div className='page'>
+                <Routes>
+                    <Route
+                        path='/'
+                        element={
+                            <>
+                                <Header
+                                    isLoggedIn={isLoggedIn}
+                                    openPopup={handleNavPopupOpen}
+                                    color='blue'
+                                />
+                                <Main />
+                                <Footer />
+                            </>
+                        }
+                    />
+                    <Route
+                        path='/sign-up'
+                        element={
+                            isLoggedIn ? (
+                                <Navigate to='/movies' />
+                            ) : (
+                                <Register
+                                    isLoading={isLoading}
+                                    isSuccess={isSuccess}
+                                    onSubmit={handleRegister}
+                                />
+                            )
+                        }
+                    />
+                    <Route
+                        path='/sign-in'
+                        element={
+                            isLoggedIn ? (
+                                <Navigate to='/movies' />
+                            ) : (
+                                <Login
+                                    isLoading={isLoading}
+                                    isSuccess={isSuccess}
+                                    onSubmit={handleLogin}
+                                />
+                            )
+                        }
+                    />
+                    <Route
+                        path='/profile'
+                        element={
+                            <ProtectedRoute isLoggedIn={isLoggedIn}>
+                                <Header
+                                    isLoggedIn={isLoggedIn}
+                                    openPopup={handleNavPopupOpen}
+                                    color='black'
+                                    activeRoute='profile'
+                                />
+                                <Profile
+                                    isLoading={isLoading}
+                                    onEdit={handleEditProfile}
+                                    onExit={signOut}
+                                />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path='/movies'
+                        element={
+                            <ProtectedRoute isLoggedIn={isLoggedIn}>
+                                <Header
+                                    isLoggedIn={isLoggedIn}
+                                    openPopup={handleNavPopupOpen}
+                                    color='black'
+                                    activeRoute='movies'
+                                />
+                                <Movies
+                                    preloaderActive={preloaderActive}
+                                    notFound={notFound}
+                                    isSearching={isSearching}
+                                    onSearch={handleMovieSearch}
+                                    foundMovies={foundMovies}
+                                    onSave={saveMovie}
+                                    onDelete={deleteMovie}
+                                    savedMovies={savedMovies}
+                                    onCheckboxClick={handleCheckbox}
+                                />
+                                <Footer />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path='/saved-movies'
+                        element={
+                            <ProtectedRoute isLoggedIn={isLoggedIn}>
+                                <Header
+                                    isLoggedIn={isLoggedIn}
+                                    openPopup={handleNavPopupOpen}
+                                    color='black'
+                                    activeRoute='saved-movies'
+                                />
+                                <SavedMovies
+                                    preloaderActive={preloaderActive}
+                                    savedMovies={savedMovies}
+                                    onCheckboxClick={handleSavedMoviesCheckbox}
+                                    onSave={saveMovie}
+                                    onDelete={deleteMovie}
+                                    notFound={notFound}
+                                    foundMovies={savedMovies}
+                                    isSearching={isSearching}
+                                    onSearch={handleSavedMovieSearch}
+                                />
+                                <Footer />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path='*' element={<PageNotFound navigate={navigate} />} />
+                </Routes>
+                <NavigationPopup isOpen={isNavPopupOpen} onClose={closePopups} />
+                <InfoTooltip
+                    isSuccess={isSuccess}
+                    errorText={'Что-то пошло не так! Попробуйте ещё раз.'}
+                    successText={'Вы успешно зарегистрировались!'}
+                    onClose={closePopups}
+                    isOpen={isStatusPopupOpen}
                 />
-                <Route
-                    path='/sign-up'
-                    element={isLoggedIn ? (
-                        <Navigate to="/" />
-                    ) : (
-                    <Register isLoading={isLoading} isSuccess={isSuccess} onSubmit={handleRegister} />
-                    )}
-                />
-                <Route
-                    path='/sign-in'
-                    element={isLoggedIn ? (
-                        <Navigate to="/" />
-                    ) : (
-                    <Login isLoading={isLoading} isSuccess={isSuccess} onSubmit={handleLogin} />
-                    )}
-                />
-                <Route
-                    path='/profile'
-                    element={
-                        <ProtectedRoute isLoggedIn={isLoggedIn}>
-                            <Header
-                                isLoggedIn={isLoggedIn}
-                                openPopup={handleNavPopupOpen}
-                                color='black'
-                                activeRoute='profile'
-                            />
-                            <Profile isLoading={isLoading} />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path='/movies'
-                    element={
-                        <ProtectedRoute isLoggedIn={isLoggedIn}>
-                            <Header
-                                isLoggedIn={isLoggedIn}
-                                openPopup={handleNavPopupOpen}
-                                color='black'
-                                activeRoute='movies'
-                            />
-                            <Movies
-                                preloaderActive={preloaderActive}
-                                notFound={notFound}
-                                isSearching={isSearching}
-                                onSearch={handleMovieSearch}
-                                foundMovies={foundMovies}
-                                onSave={saveMovie}
-                                onDelete={deleteMovie}
-                                savedMovies={savedMovies}
-                                onCheckboxClick={handleCheckbox}
-                            />
-                            <Footer />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path='/saved-movies'
-                    element={
-                        <ProtectedRoute isLoggedIn={isLoggedIn}>
-                            <Header
-                                isLoggedIn={isLoggedIn}
-                                openPopup={handleNavPopupOpen}
-                                color='black'
-                                activeRoute='saved-movies'
-                            />
-                            <SavedMovies
-                                preloaderActive={preloaderActive}
-                                savedMovies={savedMovies}
-                                onCheckboxClick={handleSavedMoviesCheckbox}
-                                onSave={saveMovie}
-                                onDelete={deleteMovie}
-                                notFound={notFound}
-                                foundMovies={savedMovies}
-                                isSearching={isSearching}
-                                onSearch={handleSavedMovieSearch}
-                            />
-                            <Footer />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route path='*' element={<PageNotFound navigate={navigate} />} />
-            </Routes>
-            <NavigationPopup isOpen={isNavPopupOpen} onClose={closePopups} />
-            <InfoTooltip
-                isSuccess={isSuccess} 
-                errorText={'Что-то пошло не так! Попробуйте ещё раз.'}
-                successText={'Вы успешно зарегистрировались!'}
-                onClose={closePopups}
-                isOpen={isStatusPopupOpen}
-            />
-        </div>
+            </div>
         </CurrentUserContext.Provider>
     );
 }

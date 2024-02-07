@@ -65,6 +65,17 @@
     min-height: 12px;
 }
 
+.entrance-form__error {
+    color: #ee3465;
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 1.21;
+    text-align: center;
+    width: 100%;
+    min-height: 14px;
+    margin: auto auto 20px;
+}
+
 .entrance-form__submit-button {
     width: 100%;
     height: 45px;
@@ -75,7 +86,7 @@
     font-size: 14px;
     line-height: 1.21;
     color: #fff;
-    margin: auto 0 0;
+    margin: 0;
     padding-right: 8px;
     cursor: pointer;
     transition: opacity 0.5s ease;

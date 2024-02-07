@@ -8,7 +8,7 @@ export default function EntranceForm(props) {
     const location = useLocation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [disabled, setDisabled] = useState(false);
+    // const [disabled, setDisabled] = useState(true);
     function handleEmailChange(evt) {
         setEmail(evt.target.value);
     }
@@ -18,10 +18,8 @@ export default function EntranceForm(props) {
     function handleSubmit(evt) {
         evt.preventDefault();
         if (location.pathname === '/sign-up') {
-            console.log(props.name, email, password);
-            props.onSubmit(props.name, email, password);
+            props.onSubmit(email, password, props.name);
         } else if (location.pathname === '/sign-in') {
-            console.log(email, password);
             props.onSubmit(email, password);
         }
     }
@@ -33,7 +31,7 @@ export default function EntranceForm(props) {
                     <img src={projectLogo} alt='Логотип' className='entrance-form__logo'></img>
                 </Link>
                 <h1 className='entrance-form__title'>{props.title}</h1>
-                <form className='entrance-form__content' onSubmit={props.onSubmit}>
+                <form name='entrance' className='entrance-form__content' onSubmit={props.onSubmit}>
                     {props.children}
                     <p className='entrance-form__input-name'>E-mail</p>
                     <input
@@ -61,11 +59,13 @@ export default function EntranceForm(props) {
                         onChange={handlePasswordChange}
                     />
                     <span className='entrance-form__reminder'></span>
+                    <p className='entrance-form__error'>
+                    </p>
                     <button
                         className='entrance-form__submit-button'
                         type='submit'
                         onSubmit={handleSubmit}
-                        disabled={disabled}
+                        // disabled={disabled}
                     >
                         {props.text}
                     </button>

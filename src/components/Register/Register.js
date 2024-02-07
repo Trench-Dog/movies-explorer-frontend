@@ -16,6 +16,7 @@ export default function Register(props) {
     );
     
     const [name, setName] = useState('');
+    
     function handleNameChange(evt) {
         setName(evt.target.value);
     }

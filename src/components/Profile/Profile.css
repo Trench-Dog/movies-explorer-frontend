@@ -39,6 +39,55 @@
     margin: 0 0 208px;
 }
 
+.profile__email-value {
+    background-color: #202020;
+    color: #fff;
+    outline: none;
+    appearance: none;
+    border: none;
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 1.21;
+    text-align: right;
+    width: 85%;
+}
+.profile__name-value {
+    background-color: #202020;
+    color: #fff;
+    outline: none;
+    appearance: none;
+    border: none;
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 1.21;
+    text-align: right;
+    width: 90%;
+}
+
+.profile__disabled {
+    cursor: default;
+}
+
+.profile__submit-button {
+    width: 100%;
+    height: 45px;
+    background: #4285f4;
+    border: none;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.21;
+    color: #fff;
+    margin: 0;
+    padding-right: 8px;
+    cursor: pointer;
+    transition: opacity 0.5s ease;
+}
+
+.profile__submit-button:hover {
+    opacity: 0.8;
+}
+
 .profile__button {
     border: none;
     background: none;
