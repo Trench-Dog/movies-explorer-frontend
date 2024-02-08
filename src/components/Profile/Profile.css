@@ -25,7 +25,7 @@
     line-height: 1.21;
     color: #fff;
     margin: 113px 0 7px;
-    padding-bottom: 5px;
+    padding-bottom: 2px;
 }
 
 .profile__email {
@@ -39,6 +39,16 @@
     margin: 0 0 208px;
 }
 
+.profile__input-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: end;
+    text-align: right;
+    width: 85%;
+    padding-top: 10px;
+}
+
 .profile__email-value {
     background-color: #202020;
     color: #fff;
@@ -49,7 +59,7 @@
     font-size: 11px;
     line-height: 1.21;
     text-align: right;
-    width: 85%;
+    width: 95%;
 }
 .profile__name-value {
     background-color: #202020;
@@ -61,11 +71,21 @@
     font-size: 11px;
     line-height: 1.21;
     text-align: right;
-    width: 90%;
+    width: 95%;
 }
 
 .profile__input-disabled {
     cursor: default;
+}
+
+.profile__reminder {
+    color: #ee3465;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 1.21;
+    padding: 0;
+    margin: 0 0 0 auto;
+    min-height: 12px;
 }
 
 .profile__error {

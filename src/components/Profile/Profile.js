@@ -49,10 +49,10 @@ export default function Profile({ isLoading, onEdit, onExit, isSuccess }) {
             }
         }
         if (editingAllowed || !inputsDisabled) {
-          document.addEventListener('keydown', onPushEsc);
-      } else {
-          document.removeEventListener('keydown', onPushEsc);
-      }
+            document.addEventListener('keydown', onPushEsc);
+        } else {
+            document.removeEventListener('keydown', onPushEsc);
+        }
     }, [editingAllowed, inputsDisabled]);
 
     function handleEmailChange(evt) {
@@ -90,37 +90,43 @@ export default function Profile({ isLoading, onEdit, onExit, isSuccess }) {
                 <h1 className='profile__greeting'>{`Привет, ${currentUser.name}!`}</h1>
                 <div className='profile__name'>
                     <p className='profile__name-caption'>Имя</p>
-                    <input
-                        className={`profile__name-value ${
-                            inputsDisabled ? 'profile__input-disabled' : ''
-                        }`}
-                        name='name'
-                        placeholder=''
-                        required
-                        type='text'
-                        value={name.value}
-                        minLength='7'
-                        maxLength='200'
-                        onChange={handleNameChange}
-                        disabled={inputsDisabled}
-                    />
+                    <div className='profile__input-container'>
+                        <input
+                            className={`profile__name-value ${
+                                inputsDisabled ? 'profile__input-disabled' : ''
+                            }`}
+                            name='name'
+                            placeholder=''
+                            required
+                            type='text'
+                            value={name.value}
+                            minLength='7'
+                            maxLength='200'
+                            onChange={handleNameChange}
+                            disabled={inputsDisabled}
+                        />
+                        <span className='profile__reminder'>{name.error}</span>
+                    </div>
                 </div>
                 <div className='profile__email'>
                     <p className='profile__email-caption'>E-mail</p>
-                    <input
-                        className={`profile__email-value ${
-                            inputsDisabled ? 'profile__input-disabled' : ''
-                        }`}
-                        name='email'
-                        placeholder=''
-                        required
-                        type='email'
-                        value={email.value}
-                        minLength='2'
-                        maxLength='40'
-                        onChange={handleEmailChange}
-                        disabled={inputsDisabled}
-                    />
+                    <div className='profile__input-container'>
+                        <input
+                            className={`profile__email-value ${
+                                inputsDisabled ? 'profile__input-disabled' : ''
+                            }`}
+                            name='email'
+                            placeholder=''
+                            required
+                            type='email'
+                            value={email.value}
+                            minLength='2'
+                            maxLength='40'
+                            onChange={handleEmailChange}
+                            disabled={inputsDisabled}
+                        />
+                        <span className='profile__reminder'>{email.error}</span>
+                    </div>
                 </div>
                 {editingAllowed ? (
                     <>
