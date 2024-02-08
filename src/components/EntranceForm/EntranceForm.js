@@ -19,12 +19,12 @@ export default function EntranceForm(props) {
     const [disabled, setDisabled] = useState(true);
 
     useEffect(() => {
-      if (email.valid && password.valid && props.name.valid) {
-        setDisabled(false);
-      } else {
-        setDisabled(true);
-      }
-    }, [email.valid, password.valid, props.name.valid])
+        if (email.valid && password.valid && props.name.valid) {
+            setDisabled(false);
+        } else {
+            setDisabled(true);
+        }
+    }, [email.valid, password.valid, props.name.valid]);
 
     function handleEmailChange(evt) {
         const email = evt.target;
@@ -35,12 +35,12 @@ export default function EntranceForm(props) {
         });
     }
     function handlePasswordChange(evt) {
-      const password = evt.target;
-      setPassword({
-          value: password.value,
-          valid: password.validity.valid,
-          error: password.validationMessage
-      });
+        const password = evt.target;
+        setPassword({
+            value: password.value,
+            valid: password.validity.valid,
+            error: password.validationMessage
+        });
     }
 
     function handleSubmit(evt) {
@@ -91,7 +91,9 @@ export default function EntranceForm(props) {
                         {props.isSuccess ? '' : props.errorMessage}
                     </p>
                     <button
-                        className={`entrance-form__submit-button ${disabled ? 'entrance-form__disabled' : ''}`}
+                        className={`entrance-form__submit-button ${
+                            disabled ? 'entrance-form__disabled' : ''
+                        }`}
                         type='submit'
                         disabled={disabled}
                     >

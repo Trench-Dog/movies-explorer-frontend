@@ -13,5 +13,5 @@ export default function Login(props) {
         </p>
     );
 
-    return <EntranceForm title='Рады видеть!' isSuccess={props.isSuccess} errorMessage={props.errorMessage} text={props.isLoading ? 'Выполняем вход...' : 'Войти'} confirmation={confirmation} onSubmit={props.onSubmit}/>;
+    return <EntranceForm title='Рады видеть!' isSuccess={props.isSuccess} errorMessage={props.errorMessage} text={props.isLoading ? 'Выполняем вход...' : 'Войти'} confirmation={confirmation} onSubmit={props.onSubmit} name='login' />;
 }
