@@ -1,26 +1,54 @@
 import './EntranceForm.css';
 import { Link } from 'react-router-dom';
 import projectLogo from '../../images/project-logo.svg';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 export default function EntranceForm(props) {
     const location = useLocation();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    // const [disabled, setDisabled] = useState(true);
+    const [email, setEmail] = useState({
+        value: '',
+        valid: false,
+        error: ''
+    });
+    const [password, setPassword] = useState({
+        value: '',
+        valid: false,
+        error: ''
+    });
+    const [disabled, setDisabled] = useState(true);
+
+    useEffect(() => {
+      if (email.valid && password.valid && props.name.valid) {
+        setDisabled(false);
+      } else {
+        setDisabled(true);
+      }
+    }, [email.valid, password.valid, props.name.valid])
+
     function handleEmailChange(evt) {
-        setEmail(evt.target.value);
+        const email = evt.target;
+        setEmail({
+            value: email.value,
+            valid: email.validity.valid,
+            error: email.validationMessage
+        });
     }
     function handlePasswordChange(evt) {
-        setPassword(evt.target.value);
+      const password = evt.target;
+      setPassword({
+          value: password.value,
+          valid: password.validity.valid,
+          error: password.validationMessage
+      });
     }
+
     function handleSubmit(evt) {
         evt.preventDefault();
         if (location.pathname === '/sign-up') {
-            props.onSubmit(email, password, props.name);
+            props.onSubmit(email.value, password.value, props.name.value);
         } else if (location.pathname === '/sign-in') {
-            props.onSubmit(email, password);
+            props.onSubmit(email.value, password.value);
         }
     }
 
@@ -31,7 +59,7 @@ export default function EntranceForm(props) {
                     <img src={projectLogo} alt='Логотип' className='entrance-form__logo'></img>
                 </Link>
                 <h1 className='entrance-form__title'>{props.title}</h1>
-                <form name='entrance' className='entrance-form__content' onSubmit={props.onSubmit}>
+                <form name='entrance' className='entrance-form__content' onSubmit={handleSubmit}>
                     {props.children}
                     <p className='entrance-form__input-name'>E-mail</p>
                     <input
@@ -42,10 +70,10 @@ export default function EntranceForm(props) {
                         required
                         minLength='2'
                         maxLength='40'
-                        value={email}
+                        value={email.value}
                         onChange={handleEmailChange}
                     />
-                    <span className='entrance-form__reminder'></span>
+                    <span className='entrance-form__reminder'>{email.error}</span>
                     <p className='entrance-form__input-name'>Пароль</p>
                     <input
                         type='password'
@@ -55,17 +83,17 @@ export default function EntranceForm(props) {
                         placeholder='Введите пароль'
                         minLength='7'
                         maxLength='200'
-                        value={password}
+                        value={password.value}
                         onChange={handlePasswordChange}
                     />
-                    <span className='entrance-form__reminder'></span>
+                    <span className='entrance-form__reminder'>{password.error}</span>
                     <p className='entrance-form__error'>
+                        {props.isSuccess ? '' : props.errorMessage}
                     </p>
                     <button
-                        className='entrance-form__submit-button'
+                        className={`entrance-form__submit-button ${disabled ? 'entrance-form__disabled' : ''}`}
                         type='submit'
-                        onSubmit={handleSubmit}
-                        // disabled={disabled}
+                        disabled={disabled}
                     >
                         {props.text}
                     </button>

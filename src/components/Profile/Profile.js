@@ -1,76 +1,142 @@
 import './Profile.css';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
-export default function Profile(props) {
+export default function Profile({ isLoading, onEdit, onExit, isSuccess }) {
     const currentUser = useContext(CurrentUserContext);
-    const [editindAllowed, setEditingAllowed] = useState(false);
-    const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
-    const [disabled, setDisabled] = useState(true);
+    const [editingAllowed, setEditingAllowed] = useState(false);
+    const [email, setEmail] = useState({
+        value: currentUser.email,
+        valid: false,
+        error: ''
+    });
+    const [name, setName] = useState({
+        value: currentUser.name,
+        valid: false,
+        error: ''
+    });
+    const [inputsDisabled, setInputsDisabled] = useState(true);
+    const [buttonDisabled, setButtonDisabled] = useState(true);
+
+    useEffect(() => {
+        if (isSuccess) {
+            setEditingAllowed(false);
+            setInputsDisabled(true);
+        } else {
+            setEditingAllowed(true);
+            setInputsDisabled(false);
+        }
+    }, [isSuccess]);
+
+    let isValid =
+        email.valid &&
+        name.valid &&
+        (name.value !== currentUser.name || email.value !== currentUser.email);
+
+    useEffect(() => {
+        if (isValid) {
+            setButtonDisabled(false);
+        } else {
+            setButtonDisabled(true);
+        }
+    }, [isValid]);
+
+    useEffect(() => {
+        function onPushEsc(evt) {
+            if (evt.key === 'Escape') {
+                setEditingAllowed(false);
+                setInputsDisabled(true);
+            }
+        }
+        if (editingAllowed || !inputsDisabled) {
+          document.addEventListener('keydown', onPushEsc);
+      } else {
+          document.removeEventListener('keydown', onPushEsc);
+      }
+    }, [editingAllowed, inputsDisabled]);
 
     function handleEmailChange(evt) {
-        setEmail(evt.target.value);
+        const email = evt.target;
+        setEmail({
+            value: email.value,
+            valid: email.validity.valid,
+            error: email.validationMessage
+        });
     }
     function handleNameChange(evt) {
-        setName(evt.target.value);
+        const name = evt.target;
+        setName({
+            value: name.value,
+            valid: name.validity.valid,
+            error: name.validationMessage
+        });
     }
 
     function handleEditing() {
         setEditingAllowed(true);
-        setDisabled(false);
+        setInputsDisabled(false);
     }
 
     function handleSubmit(evt) {
         evt.preventDefault();
-        props.onEdit(name, email);
+        onEdit(name.value, email.value);
         setEditingAllowed(false);
-        setDisabled(true);
+        setInputsDisabled(true);
     }
 
     return (
         <main>
-            <form name='profile' className='profile'>
+            <form name='profile' className='profile' onSubmit={handleSubmit}>
                 <h1 className='profile__greeting'>{`Привет, ${currentUser.name}!`}</h1>
                 <div className='profile__name'>
                     <p className='profile__name-caption'>Имя</p>
                     <input
-                        className={`profile__name-value ${disabled ? 'profile__disabled' : ''}`}
+                        className={`profile__name-value ${
+                            inputsDisabled ? 'profile__input-disabled' : ''
+                        }`}
                         name='name'
                         placeholder=''
                         required
                         type='text'
-                        value={name}
+                        value={name.value}
                         minLength='7'
                         maxLength='200'
                         onChange={handleNameChange}
-                        disabled={disabled}
+                        disabled={inputsDisabled}
                     />
                 </div>
                 <div className='profile__email'>
                     <p className='profile__email-caption'>E-mail</p>
                     <input
-                        className={`profile__email-value ${disabled ? 'profile__disabled' : ''}`}
+                        className={`profile__email-value ${
+                            inputsDisabled ? 'profile__input-disabled' : ''
+                        }`}
                         name='email'
                         placeholder=''
                         required
                         type='email'
-                        value={email}
+                        value={email.value}
                         minLength='2'
                         maxLength='40'
                         onChange={handleEmailChange}
-                        disabled={disabled}
+                        disabled={inputsDisabled}
                     />
                 </div>
-                {editindAllowed ? (
-                    <button
-                        type='submit'
-                        className='profile__submit-button'
-                        onsubmit={handleSubmit}
-                        disabled={disabled}
-                    >
-                        {props.isLoading ? 'Сохранение...' : 'Сохранить'}
-                    </button>
+                {editingAllowed ? (
+                    <>
+                        <p className='profile__error'>
+                            {isSuccess ? '' : 'При обновлении профиля произошла ошибка.'}
+                        </p>
+                        <button
+                            type='submit'
+                            className={`profile__submit-button ${
+                                buttonDisabled ? 'profile__button-disabled' : ''
+                            }`}
+                            disabled={buttonDisabled}
+                        >
+                            {isLoading ? 'Сохранение...' : 'Сохранить'}
+                        </button>
+                    </>
                 ) : (
                     <>
                         <button
@@ -80,7 +146,11 @@ export default function Profile(props) {
                         >
                             Редактировать
                         </button>
-                        <button onClick={props.onExit()} type='button' className='profile__button profile__button_type_exit'>
+                        <button
+                            onClick={onExit}
+                            type='button'
+                            className='profile__button profile__button_type_exit'
+                        >
                             Выйти из аккаунта
                         </button>
                     </>

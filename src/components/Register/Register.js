@@ -14,14 +14,24 @@ export default function Register(props) {
             </NavLink>
         </p>
     );
-    
-    const [name, setName] = useState('');
-    
+
+    const [name, setName] = useState({
+      name: '',
+      valid: false,
+      error: ''
+    });
+
     function handleNameChange(evt) {
-        setName(evt.target.value);
+      const name = evt.target;
+      setName({
+          value: name.value,
+          valid: name.validity.valid,
+          error: name.validationMessage
+      });
     }
+
     return (
-        <EntranceForm title='Добро пожаловать!' text={props.isLoading ? 'Выполняем регистрацию...' : 'Зарегистрироваться'} confirmation={confirmation} onSubmit={props.onSubmit} name={name}>
+        <EntranceForm title='Добро пожаловать!' isSuccess={props.isSuccess} errorMessage={props.errorMessage} text={props.isLoading ? 'Выполняем регистрацию...' : 'Зарегистрироваться'} confirmation={confirmation} onSubmit={props.onSubmit} name={name}>
             <p className='entrance-form__input-name'>Имя</p>
             <input
                 type="text"
@@ -31,10 +41,10 @@ export default function Register(props) {
                 placeholder='Введите имя'
                 minLength="2"
                 maxLength="30"
-                value={name}
+                value={name.value}
                 onChange={handleNameChange}
             />
-            <span className="entrance-form__reminder"></span>
+            <span className="entrance-form__reminder">{name.error}</span>
         </EntranceForm>
     );
 }

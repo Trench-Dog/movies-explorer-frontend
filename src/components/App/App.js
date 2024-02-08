@@ -9,7 +9,7 @@ import Profile from '../Profile/Profile';
 import Movies from '../Movies/Movies';
 import SavedMovies from '../SavedMovies/SavedMovies';
 import NavigationPopup from '../NavigationPopup/NavigationPopup';
-import InfoTooltip from '../InfoTooltip/InfoTooltip';
+// import InfoTooltip from '../InfoTooltip/InfoTooltip';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
@@ -23,7 +23,7 @@ export default function App() {
     const navigate = useNavigate();
 
     const [isNavPopupOpen, setIsNavPopupOpen] = useState(false);
-    const [isStatusPopupOpen, setIsStatusPopupOpen] = useState(false);
+    // const [isStatusPopupOpen, setIsStatusPopupOpen] = useState(false);
     const [preloaderActive, setPreloaderActive] = useState(false);
     const [allMovies, setAllMovies] = useState([]);
     const [notFound, setNotFound] = useState(false);
@@ -34,6 +34,8 @@ export default function App() {
     const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    // const [successMessage, setSuccessMessage] = useState('');
     const [currentUser, setCurrentUser] = useState({
         _id: '',
         name: '',
@@ -46,29 +48,43 @@ export default function App() {
                 closePopups();
             }
         }
-        if (isNavPopupOpen || isStatusPopupOpen) {
+        if (isNavPopupOpen) {
             document.addEventListener('keydown', onPushEsc);
         } else {
             document.removeEventListener('keydown', onPushEsc);
         }
-    }, [isNavPopupOpen, isStatusPopupOpen]);
+    }, [isNavPopupOpen]);
 
-    // useEffect(() => {
-    //     handleTokenCheck();
-    // }, []);
+    useEffect(() => {
+        if (isLoggedIn) {
+            mainApi
+                .getUserInfo()
+                .then(userData => {
+                    setCurrentUser(userData);
+                })
+                .catch(err => alert(err));
+        }
+    }, [isLoggedIn]);
+
+    useEffect(() => {
+        handleTokenCheck();
+    }, []);
 
     function handleRegister(email, password, name) {
         setIsLoading(true);
-        authApi.register(email, password, name)
+        authApi
+            .register(email, password, name)
             .then(res => {
                 if (res) {
                     setIsSuccess(true);
-                    handleStatusPopupOpen();
+                    // handleStatusPopupOpen();
+                    handleLogin(email, password);
                 }
             })
             .catch(err => {
+                setErrorMessage('Возникла ошибка при регистрации');
                 setIsSuccess(false);
-                handleStatusPopupOpen();
+                // handleStatusPopupOpen();
                 console.log(err);
             })
             .finally(() => {
@@ -84,11 +100,13 @@ export default function App() {
                 if (res.token) {
                     localStorage.setItem('jwt', res.token);
                     setIsLoggedIn(true);
+                    navigate('/movies');
                 }
             })
             .catch(err => {
+                setErrorMessage('Возникла ошибка при авторизации');
                 setIsSuccess(false);
-                handleStatusPopupOpen();
+                // handleStatusPopupOpen();
                 console.log(err);
             })
             .finally(() => {
@@ -101,9 +119,19 @@ export default function App() {
         mainApi
             .editUserInfo(name, email)
             .then(user => {
-                setCurrentUser(user);
+                if (user) {
+                    setCurrentUser(user);
+                    setIsSuccess(true);
+                } else {
+                    setIsSuccess(false);
+                }
             })
-            .catch(err => alert(err))
+            .catch(err => {
+                if (err) {
+                    setIsSuccess(false);
+                }
+                console.log(err);
+            })
             .finally(() => {
                 setIsLoading(false);
             });
@@ -126,8 +154,8 @@ export default function App() {
         setFoundMovies([]);
         setSavedMovies([]);
         setSavedMoviesBackup([]);
-        localStorage.removeItem('jwt');
-        navigate('/sign-in');
+        localStorage.clear();
+        navigate('/');
     }
 
     function handleMovieSearch(movie, checkbox) {
@@ -227,13 +255,13 @@ export default function App() {
         setIsNavPopupOpen(true);
     }
 
-    function handleStatusPopupOpen() {
-        setIsStatusPopupOpen(true);
-    }
+    // function handleStatusPopupOpen() {
+    //     setIsStatusPopupOpen(true);
+    // }
 
     function closePopups() {
         setIsNavPopupOpen(false);
-        setIsStatusPopupOpen(false);
+        // setIsStatusPopupOpen(false);
     }
 
     function handleCheckbox(active) {
@@ -286,6 +314,7 @@ export default function App() {
                                     isLoading={isLoading}
                                     isSuccess={isSuccess}
                                     onSubmit={handleRegister}
+                                    errorMessage={errorMessage}
                                 />
                             )
                         }
@@ -300,6 +329,7 @@ export default function App() {
                                     isLoading={isLoading}
                                     isSuccess={isSuccess}
                                     onSubmit={handleLogin}
+                                    errorMessage={errorMessage}
                                 />
                             )
                         }
@@ -318,6 +348,7 @@ export default function App() {
                                     isLoading={isLoading}
                                     onEdit={handleEditProfile}
                                     onExit={signOut}
+                                    isSuccess={isSuccess}
                                 />
                             </ProtectedRoute>
                         }
@@ -375,13 +406,13 @@ export default function App() {
                     <Route path='*' element={<PageNotFound navigate={navigate} />} />
                 </Routes>
                 <NavigationPopup isOpen={isNavPopupOpen} onClose={closePopups} />
-                <InfoTooltip
+                {/* <InfoTooltip
                     isSuccess={isSuccess}
-                    errorText={'Что-то пошло не так! Попробуйте ещё раз.'}
-                    successText={'Вы успешно зарегистрировались!'}
+                    errorText={errorMessage}
+                    successText={successMessage}
                     onClose={closePopups}
                     isOpen={isStatusPopupOpen}
-                />
+                /> */}
             </div>
         </CurrentUserContext.Provider>
     );
