@@ -16,16 +16,33 @@ export default function EntranceForm(props) {
         valid: false,
         error: ''
     });
+    const [name, setName] = useState({
+        name: '',
+        valid: false,
+        error: ''
+    });
+
     const [disabled, setDisabled] = useState(true);
 
     useEffect(() => {
-        if (email.valid && password.valid && props.name.valid) {
+        if (email.valid && password.valid && name.valid && location.pathname === '/sign-up') {
+            setDisabled(false);
+        } else if (email.valid && password.valid) {
             setDisabled(false);
         } else {
             setDisabled(true);
         }
-    }, [email.valid, password.valid, props.name.valid]);
+    }, [email, password, name, location]);
 
+    function handleNameChange(evt) {
+        const name = evt.target;
+        console.log(name.value);
+        setName({
+            value: name.value,
+            valid: name.validity.valid,
+            error: name.validationMessage
+        });
+    }
     function handleEmailChange(evt) {
         const email = evt.target;
         setEmail({
@@ -46,7 +63,7 @@ export default function EntranceForm(props) {
     function handleSubmit(evt) {
         evt.preventDefault();
         if (location.pathname === '/sign-up') {
-            props.onSubmit(email.value, password.value, props.name.value);
+            props.onSubmit(email.value, password.value, name.value);
         } else if (location.pathname === '/sign-in') {
             props.onSubmit(email.value, password.value);
         }
@@ -60,7 +77,25 @@ export default function EntranceForm(props) {
                 </Link>
                 <h1 className='entrance-form__title'>{props.title}</h1>
                 <form name='entrance' className='entrance-form__content' onSubmit={handleSubmit}>
-                    {props.children}
+                    {location.pathname === '/sign-up' ? (
+                        <>
+                            <p className='entrance-form__input-name'>Имя</p>
+                            <input
+                                type='text'
+                                className='entrance-form__data'
+                                name='name'
+                                required
+                                placeholder='Введите имя'
+                                minLength='2'
+                                maxLength='30'
+                                value={name.value}
+                                onChange={handleNameChange}
+                            />
+                            <span className='entrance-form__reminder'>{name.error}</span>
+                        </>
+                    ) : (
+                        ''
+                    )}
                     <p className='entrance-form__input-name'>E-mail</p>
                     <input
                         type='email'

@@ -9,7 +9,6 @@ import Profile from '../Profile/Profile';
 import Movies from '../Movies/Movies';
 import SavedMovies from '../SavedMovies/SavedMovies';
 import NavigationPopup from '../NavigationPopup/NavigationPopup';
-// import InfoTooltip from '../InfoTooltip/InfoTooltip';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
@@ -23,19 +22,19 @@ export default function App() {
     const navigate = useNavigate();
 
     const [isNavPopupOpen, setIsNavPopupOpen] = useState(false);
-    // const [isStatusPopupOpen, setIsStatusPopupOpen] = useState(false);
     const [preloaderActive, setPreloaderActive] = useState(false);
     const [allMovies, setAllMovies] = useState([]);
     const [notFound, setNotFound] = useState(false);
     const [foundMovies, setFoundMovies] = useState([]);
     const [savedMovies, setSavedMovies] = useState([]);
-    const [savedMoviesBackup, setSavedMoviesBackup] = useState([]);
+    const [saveBackup, setSaveBackup] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isSuccess, setIsSuccess] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
-    // const [successMessage, setSuccessMessage] = useState('');
+    const [checkBoxActive, setCheckboxActive] = useState(false);
+    const [savedCheckBoxActive, setSavedCheckboxActive] = useState(false);
     const [currentUser, setCurrentUser] = useState({
         _id: '',
         name: '',
@@ -70,6 +69,25 @@ export default function App() {
         handleTokenCheck();
     }, []);
 
+    useEffect(() => {
+        if (
+            JSON.parse(localStorage.getItem('searchedMovies')) &&
+            JSON.parse(localStorage.getItem('checkboxActive'))
+        ) {
+            handleCheckbox(JSON.parse(localStorage.getItem('checkboxActive')));
+        }
+    }, []);
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            mainApi.getSavedMovies().then(movies => {
+                localStorage.setItem('savedMovies', JSON.stringify(movies));
+                setSavedMovies(movies);
+                setSaveBackup(movies);
+            });
+        }
+    }, [isLoggedIn]);
+
     function handleRegister(email, password, name) {
         setIsLoading(true);
         authApi
@@ -77,14 +95,12 @@ export default function App() {
             .then(res => {
                 if (res) {
                     setIsSuccess(true);
-                    // handleStatusPopupOpen();
                     handleLogin(email, password);
                 }
             })
             .catch(err => {
                 setErrorMessage('Возникла ошибка при регистрации');
                 setIsSuccess(false);
-                // handleStatusPopupOpen();
                 console.log(err);
             })
             .finally(() => {
@@ -106,7 +122,6 @@ export default function App() {
             .catch(err => {
                 setErrorMessage('Возникла ошибка при авторизации');
                 setIsSuccess(false);
-                // handleStatusPopupOpen();
                 console.log(err);
             })
             .finally(() => {
@@ -150,24 +165,26 @@ export default function App() {
 
     function signOut() {
         setIsLoggedIn(false);
+        setIsLoading(false);
+        setIsSuccess(true);
+        setNotFound(false);
+        setPreloaderActive(false);
         setAllMovies([]);
         setFoundMovies([]);
         setSavedMovies([]);
-        setSavedMoviesBackup([]);
+        setSaveBackup([]);
         localStorage.clear();
         navigate('/');
     }
 
     function handleMovieSearch(movie, checkbox) {
-        setPreloaderActive(false);
         setNotFound(false);
         setIsSearching(true);
+        setPreloaderActive(true);
         if (allMovies.length === 0) {
-            setPreloaderActive(true);
             moviesApi
                 .getMovies()
                 .then(movies => {
-                    console.log(movies);
                     const searchedMovies = movies.filter(
                         item =>
                             item.nameRU.toLowerCase().includes(movie.toLowerCase()) ||
@@ -175,13 +192,15 @@ export default function App() {
                     );
                     if (searchedMovies.length === 0) {
                         setNotFound(true);
+                        setPreloaderActive(false);
                     } else {
+                        setCheckboxActive(false);
                         localStorage.setItem('allMovies', JSON.stringify(movies));
+                        setAllMovies(movies);
                         localStorage.setItem('searchedMovies', JSON.stringify(searchedMovies));
                         localStorage.setItem('searchValue', movie);
-                        localStorage.setItem('checkboxActive', checkbox);
-                        setAllMovies(movies);
                         setFoundMovies(searchedMovies);
+                        localStorage.setItem('checkboxActive', JSON.stringify(checkbox));
                         setPreloaderActive(false);
                     }
                 })
@@ -199,11 +218,16 @@ export default function App() {
             );
             if (searchedMovies.length === 0) {
                 setNotFound(true);
+                setIsSearching(false);
+                setPreloaderActive(false);
             } else {
                 localStorage.setItem('searchValue', movie);
                 localStorage.setItem('searchedMovies', JSON.stringify(searchedMovies));
-                localStorage.setItem('checkboxActive', JSON.stringify(checkbox));
                 setFoundMovies(searchedMovies);
+                localStorage.setItem('checkboxActive', JSON.stringify(checkbox));
+                setIsSearching(false);
+                setPreloaderActive(false);
+                setCheckboxActive(false);
             }
         }
     }
@@ -212,17 +236,48 @@ export default function App() {
         setNotFound(false);
         setPreloaderActive(true);
         setIsSearching(true);
-        const searchedSavedMovies = savedMovies.filter(
+        const searchedSavedMovies = JSON.parse(localStorage.getItem('savedMovies')).filter(
             item =>
                 item.nameRU.toLowerCase().includes(movie.toLowerCase()) ||
                 item.nameEN.toLowerCase().includes(movie.toLowerCase())
         );
         if (searchedSavedMovies.length === 0) {
+            setSavedMovies(JSON.parse(localStorage.getItem('savedMovies')));
             setNotFound(true);
+            setIsSearching(false);
+            setPreloaderActive(false);
         } else {
-            localStorage.setItem('checkboxActive', JSON.stringify(checkbox));
+            setSavedCheckboxActive(false);
+            localStorage.setItem('savedCheckboxActive', JSON.stringify(checkbox));
             setSavedMovies(searchedSavedMovies);
+            setIsSearching(false);
+            setPreloaderActive(false);
         }
+    }
+
+    function handleCheckbox(status) {
+        let searchedMovies = JSON.parse(localStorage.getItem('searchedMovies'));
+        if (searchedMovies) {
+            let shortMovies;
+            if (status) {
+                shortMovies = searchedMovies.filter(movie => movie.duration <= 40);
+            } else {
+                shortMovies = searchedMovies;
+            }
+            localStorage.setItem('checkboxActive', JSON.stringify(status));
+            setFoundMovies(shortMovies);
+        }
+    }
+
+    function handleSavedMoviesCheckbox(status) {
+        let shortSavedMovies;
+        if (status) {
+            shortSavedMovies = savedMovies.filter(movie => movie.duration <= 40);
+        } else {
+            shortSavedMovies = saveBackup;
+        }
+        localStorage.setItem('savedCheckboxActive', JSON.stringify(status));
+        setSavedMovies(shortSavedMovies);
     }
 
     function saveMovie(movie) {
@@ -230,7 +285,8 @@ export default function App() {
             .saveMovie(movie)
             .then(movie => {
                 setSavedMovies(savedMovies.concat(movie));
-                setSavedMoviesBackup(savedMovies);
+                setSaveBackup(savedMovies.concat(movie));
+                localStorage.setItem('savedMovies', JSON.stringify(savedMovies));
             })
             .catch(err => {
                 console.log(err);
@@ -241,10 +297,9 @@ export default function App() {
         mainApi
             .deleteMovie(movie._id)
             .then(() => {
-                setSavedMovies(
-                    savedMovies.splice(savedMovies.findIndex(item => item._id === movie._id))
-                );
-                setSavedMoviesBackup(savedMovies);
+                setSavedMovies(savedMovies.filter(item => item._id !== movie._id));
+                setSaveBackup(saveBackup.filter(item => item._id !== movie._id));
+                localStorage.setItem('savedMovies', JSON.stringify(savedMovies));
             })
             .catch(err => {
                 console.log(err);
@@ -255,35 +310,8 @@ export default function App() {
         setIsNavPopupOpen(true);
     }
 
-    // function handleStatusPopupOpen() {
-    //     setIsStatusPopupOpen(true);
-    // }
-
     function closePopups() {
         setIsNavPopupOpen(false);
-        // setIsStatusPopupOpen(false);
-    }
-
-    function handleCheckbox(active) {
-        let searchedMovies = JSON.parse(localStorage.getItem('searchedMovies'));
-        let shortMovies;
-        if (active) {
-            shortMovies = searchedMovies.filter(movie => movie.duration <= 40);
-        } else {
-            shortMovies = searchedMovies;
-        }
-        localStorage.setItem('checkboxActive', JSON.stringify(active));
-        setFoundMovies(shortMovies);
-    }
-
-    function handleSavedMoviesCheckbox(active) {
-        if (active) {
-            let shortSavedMovies = savedMovies.filter(movie => movie.duration <= 40);
-            setSavedMovies(shortSavedMovies);
-        } else {
-            setSavedMovies(savedMoviesBackup);
-        }
-        localStorage.setItem('checkboxActive', JSON.stringify(active));
     }
 
     return (
@@ -372,6 +400,7 @@ export default function App() {
                                     onSave={saveMovie}
                                     onDelete={deleteMovie}
                                     savedMovies={savedMovies}
+                                    checkBoxActive={checkBoxActive}
                                     onCheckboxClick={handleCheckbox}
                                 />
                                 <Footer />
@@ -397,6 +426,7 @@ export default function App() {
                                     notFound={notFound}
                                     foundMovies={savedMovies}
                                     isSearching={isSearching}
+                                    checkBoxActive={savedCheckBoxActive}
                                     onSearch={handleSavedMovieSearch}
                                 />
                                 <Footer />
@@ -406,13 +436,6 @@ export default function App() {
                     <Route path='*' element={<PageNotFound navigate={navigate} />} />
                 </Routes>
                 <NavigationPopup isOpen={isNavPopupOpen} onClose={closePopups} />
-                {/* <InfoTooltip
-                    isSuccess={isSuccess}
-                    errorText={errorMessage}
-                    successText={successMessage}
-                    onClose={closePopups}
-                    isOpen={isStatusPopupOpen}
-                /> */}
             </div>
         </CurrentUserContext.Provider>
     );

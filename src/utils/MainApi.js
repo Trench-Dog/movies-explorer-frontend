@@ -61,11 +61,10 @@ class MainApi {
                 duration: movie.duration,
                 year: movie.year,
                 description: movie.description,
-                image: movie.image,
+                image: `https://api.nomoreparties.co/${movie.image.url}`,
                 trailerLink: movie.trailerLink,
-                thumbnail: movie.thumbnail,
-                owner: movie.owner,
-                movieId: movie.movieId,
+                thumbnail: `https://api.nomoreparties.co/${movie.image.formats.thumbnail.url}`,
+                movieId: movie.id,
                 nameRU: movie.nameRU,
                 nameEN: movie.nameEN
             })
@@ -75,7 +74,7 @@ class MainApi {
     }
 
     deleteMovie(movieId) {
-        return fetch(`${this._baseUrl}/cards/${movieId}`, {
+        return fetch(`${this._baseUrl}/movies/${movieId}`, {
             method: 'DELETE',
             headers: {
                 authorization: `Bearer ${localStorage.getItem('jwt')}`,

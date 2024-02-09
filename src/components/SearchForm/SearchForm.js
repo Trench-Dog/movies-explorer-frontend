@@ -7,12 +7,14 @@ export default function SearchForm(props) {
 
     const [inputValue, setInputValue] = useState('');
     const [inputError, setInputError] = useState('');
-    const [checkbox, setCheckbox] = useState(false);
+    const [checkbox, setCheckbox] = useState(props.checkboxActive);
 
     useEffect(() => {
         if (location.pathname === '/movies') {
             setInputValue(localStorage.getItem('searchValue'));
             setCheckbox(JSON.parse(localStorage.getItem('checkboxActive')));
+        } else if (location.pathname === '/saved-movies') {
+            setCheckbox(JSON.parse(localStorage.getItem('savedCheckboxActive')));
         }
     }, [location]);
 
@@ -25,7 +27,7 @@ export default function SearchForm(props) {
 
     function handleCheckbox() {
         setCheckbox(!checkbox);
-        props.onCheckboxClick(!checkbox);        
+        props.onCheckboxClick(!checkbox);
     }
 
     function handleSubmit(evt) {
@@ -63,7 +65,7 @@ export default function SearchForm(props) {
                         className='search__checkbox'
                         type='checkbox'
                         onChange={handleCheckbox}
-                        checked={checkbox ? true : false}
+                        checked={checkbox}
                     />
                     <span className='search__checkbox-toggler'></span>
                     <p className='search__checkbox-caption'>Короткометражки</p>

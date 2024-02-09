@@ -13,17 +13,24 @@ export default function MoviesCardList(props) {
         renderMovies();
     }, [maxMovieNumber]);
 
+    const allRendered = props.foundMovies.length === renderedMovies.length;
+
+    const allMoviesPage = location.pathname === '/movies';
+    const savedMoviesPage = location.pathname === '/saved-movies';
+
     useEffect(() => {
-        if (resolution <= 620) {
+        if (resolution <= 620 && allMoviesPage) {
             setInitialMovieNumber(5);
-        } else if (resolution < 769) {
+        } else if (resolution < 769 && allMoviesPage) {
             setInitialMovieNumber(8);
-        } else if (resolution < 1001) {
+        } else if (resolution < 1001 && allMoviesPage) {
             setInitialMovieNumber(12);
-        } else if (resolution >= 1001) {
+        } else if (resolution >= 1001 && allMoviesPage) {
             setInitialMovieNumber(16);
+        } else if (resolution >= 320 && savedMoviesPage) {
+            setInitialMovieNumber(props.foundMovies.length);
         }
-    }, [props.foundMovies, resolution]);
+    }, [props.foundMovies, resolution, allMoviesPage, savedMoviesPage]);
 
     useEffect(() => {
         window.onresize = () => {
@@ -70,17 +77,30 @@ export default function MoviesCardList(props) {
 
     return (
         <section className='movies-list'>
-            <ul className='movies-list__container'>
-                {renderedMovies.map(movie => (
-                    <MoviesCard key={movie.id} movie={movie} icon={props.icon} onSave={props.onSave} onDelete={props.onDelete} savedMovies={props.savedMovies} />
-                ))}
-            </ul>
-            {location.pathname === '/movies' ? (
-                <button className='movies-list__add-button' onClick={handleAddMovies}>
-                    Ещё
-                </button>
+            {props.notFound ? (
+                <p className='movies-list__not-found'>Ничего не найдено</p>
             ) : (
-                ''
+                <>
+                    <ul className='movies-list__container'>
+                        {renderedMovies.map(movie => (
+                            <MoviesCard
+                                key={movie.id || movie._id}
+                                movie={movie}
+                                icon={props.icon}
+                                onSave={props.onSave}
+                                onDelete={props.onDelete}
+                                savedMovies={props.savedMovies}
+                            />
+                        ))}
+                    </ul>
+                    {location.pathname === '/movies' && !allRendered ? (
+                        <button className='movies-list__add-button' onClick={handleAddMovies}>
+                            Ещё
+                        </button>
+                    ) : (
+                        ''
+                    )}
+                </>
             )}
         </section>
     );

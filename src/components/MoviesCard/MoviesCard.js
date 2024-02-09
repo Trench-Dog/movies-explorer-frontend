@@ -6,7 +6,10 @@ import movieLikeEnabled from '../../images/movie-like-enabled.svg';
 
 export default function MoviesCard(props) {
     const location = useLocation();
-    const savedMovie = props.savedMovies.find(movie => movie.movieId === props.movie.id);
+
+    const savedMovie =
+        location.pathname === '/movies' &&
+        props.savedMovies.find(movie => movie.movieId === props.movie.id);
 
     function handleSetDuration(movie) {
         if (movie.duration < 60) {
@@ -44,7 +47,7 @@ export default function MoviesCard(props) {
                 <a target='blank' href={props.movie.trailerLink}>
                     <img
                         className='movie__cover'
-                        src={`https://api.nomoreparties.co${props.movie.image.url}`}
+                        src={props.movie.image}
                         alt={`Кадр из фильма ${props.movie.nameRU}`}
                     />
                 </a>

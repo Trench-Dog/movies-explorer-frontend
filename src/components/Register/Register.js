@@ -15,24 +15,9 @@ export default function Register(props) {
         </p>
     );
 
-    const [name, setName] = useState({
-      name: '',
-      valid: false,
-      error: ''
-    });
-
-    function handleNameChange(evt) {
-      const name = evt.target;
-      setName({
-          value: name.value,
-          valid: name.validity.valid,
-          error: name.validationMessage
-      });
-    }
-
     return (
-        <EntranceForm title='Добро пожаловать!' isSuccess={props.isSuccess} errorMessage={props.errorMessage} text={props.isLoading ? 'Выполняем регистрацию...' : 'Зарегистрироваться'} confirmation={confirmation} onSubmit={props.onSubmit} name={name}>
-            <p className='entrance-form__input-name'>Имя</p>
+        <EntranceForm title='Добро пожаловать!' isSuccess={props.isSuccess} errorMessage={props.errorMessage} text={props.isLoading ? 'Выполняем регистрацию...' : 'Зарегистрироваться'} confirmation={confirmation} onSubmit={props.onSubmit}>
+            {/* <p className='entrance-form__input-name'>Имя</p>
             <input
                 type="text"
                 className="entrance-form__data"
@@ -44,7 +29,7 @@ export default function Register(props) {
                 value={name.value}
                 onChange={handleNameChange}
             />
-            <span className="entrance-form__reminder">{name.error}</span>
+            <span className="entrance-form__reminder">{name.error}</span> */}
         </EntranceForm>
     );
 }
