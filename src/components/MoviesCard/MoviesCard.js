@@ -1,8 +1,13 @@
 import './MoviesCard.css';
 import { useLocation } from 'react-router-dom';
-import deleteMovieIcon from '../../images/delete-movie-icon.svg';
-import movieLikeDisabled from '../../images/movie-like.svg';
-import movieLikeEnabled from '../../images/movie-like-enabled.svg';
+
+import {
+    ONE_HOUR,
+    TWO_HOURS,
+    THREE_HOURS,
+    FOUR_HOURS,
+    MOVIES_BASE_URL
+} from '../../utils/constants';
 
 export default function MoviesCard(props) {
     const location = useLocation();
@@ -11,21 +16,23 @@ export default function MoviesCard(props) {
         location.pathname === '/movies' &&
         props.savedMovies.find(movie => movie.movieId === props.movie.id);
 
+    console.log(savedMovie);
+
     function handleSetDuration(movie) {
-        if (movie.duration < 60) {
+        if (movie.duration < ONE_HOUR) {
             return `${movie.duration} мин`;
-        } else if (movie.duration === 60) {
+        } else if (movie.duration === ONE_HOUR) {
             return '1 час';
-        } else if (movie.duration > 60 && movie.duration < 120) {
-            return `1 час ${movie.duration - 60} мин`;
-        } else if (movie.duration === 120) {
+        } else if (movie.duration > ONE_HOUR && movie.duration < TWO_HOURS) {
+            return `1 час ${movie.duration - ONE_HOUR} мин`;
+        } else if (movie.duration === TWO_HOURS) {
             return '2 часа';
-        } else if (movie.duration > 120 && movie.duration < 180) {
-            return `2 часа ${movie.duration - 120} мин`;
-        } else if (movie.duration === 180) {
+        } else if (movie.duration > TWO_HOURS && movie.duration < THREE_HOURS) {
+            return `2 часа ${movie.duration - TWO_HOURS} мин`;
+        } else if (movie.duration === THREE_HOURS) {
             return '3 часа';
-        } else if (movie.duration > 180 && movie.duration < 240) {
-            return `3 часа ${movie.duration - 180} мин`;
+        } else if (movie.duration > THREE_HOURS && movie.duration < FOUR_HOURS) {
+            return `3 часа ${movie.duration - THREE_HOURS} мин`;
         }
     }
 
@@ -55,30 +62,26 @@ export default function MoviesCard(props) {
                 <a target='blank' href={props.movie.trailerLink}>
                     <img
                         className='movie__cover'
-                        src={`https://api.nomoreparties.co${props.movie.image.url}`}
+                        src={`${MOVIES_BASE_URL}${props.movie.image.url}`}
                         alt={`Кадр из фильма ${props.movie.nameRU}`}
                     />
                 </a>
             )}
             <div className='movie__info'>
                 <p className='movie__title'>{props.movie.nameRU}</p>
-                <button type='button' className='movie__button'>
-                    {location.pathname === '/saved-movies' ? (
-                        <img
-                            className='movie__like'
-                            src={deleteMovieIcon}
-                            alt='Добавить или удалить фильм'
-                            onClick={handleDelete}
-                        ></img>
-                    ) : (
-                        <img
-                            className='movie__like'
-                            src={savedMovie ? movieLikeEnabled : movieLikeDisabled}
-                            alt='Добавить или удалить фильм'
-                            onClick={handleSubmit}
-                        ></img>
-                    )}
-                </button>
+                {location.pathname === '/movies' ? (
+                    <button
+                        type='button'
+                        onClick={handleSubmit}
+                        className={`movie__button ${savedMovie ? 'movie__active-button' : ''}`}
+                    ></button>
+                ) : (
+                    <button
+                        type='button'
+                        className='movie__saved-button'
+                        onClick={handleDelete}
+                    ></button>
+                )}
             </div>
             <p className='movie__duration'>{handleSetDuration(props.movie)}</p>
         </li>

@@ -12,6 +12,7 @@ export default function SavedMovies(props) {
                     isSearching={props.isSearching}
                     onSearch={props.onSearch}
                     checkboxActive={props.checkboxActive}
+                    foundMovies={props.foundMovies}
                 />
                 {props.preloaderActive ? (
                     <Preloader />
@@ -21,6 +22,7 @@ export default function SavedMovies(props) {
                         foundMovies={props.foundMovies}
                         onSave={props.onSave}
                         onDelete={props.onDelete}
+                        savedMovies={props.savedMovies}
                     />
                 )}
             </section>

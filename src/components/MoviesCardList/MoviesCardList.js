@@ -3,9 +3,22 @@ import MoviesCard from '../MoviesCard/MoviesCard';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import {
+    TIMEOUT,
+    RESOLUTION_320,
+    RESOLUTION_620,
+    RESOLUTION_769,
+    RESOLUTION_1001,
+    RESOLUTION_1280,
+    MOVIE_NUMBER_320,
+    MOVIE_NUMBER_768,
+    MOVIE_NUMBER_1000,
+    MOVIE_NUMBER_1280
+} from '../../utils/constants';
+
 export default function MoviesCardList(props) {
     const location = useLocation();
-    const [resolution, setResolution] = useState(1280);
+    const [resolution, setResolution] = useState(RESOLUTION_1280);
     const [renderedMovies, setRenderedMovies] = useState([]);
     const [maxMovieNumber, setMaxMovieNumber] = useState(16);
 
@@ -19,22 +32,22 @@ export default function MoviesCardList(props) {
     const savedMoviesPage = location.pathname === '/saved-movies';
 
     useEffect(() => {
-        if (resolution <= 620 && allMoviesPage) {
-            setInitialMovieNumber(5);
-        } else if (resolution < 769 && allMoviesPage) {
-            setInitialMovieNumber(8);
-        } else if (resolution < 1001 && allMoviesPage) {
-            setInitialMovieNumber(12);
-        } else if (resolution >= 1001 && allMoviesPage) {
-            setInitialMovieNumber(16);
-        } else if (resolution >= 320 && savedMoviesPage) {
+        if (resolution <= RESOLUTION_620 && allMoviesPage) {
+            setInitialMovieNumber(MOVIE_NUMBER_320);
+        } else if (resolution < RESOLUTION_769 && allMoviesPage) {
+            setInitialMovieNumber(MOVIE_NUMBER_768);
+        } else if (resolution < RESOLUTION_1001 && allMoviesPage) {
+            setInitialMovieNumber(MOVIE_NUMBER_1000);
+        } else if (resolution >= RESOLUTION_1001 && allMoviesPage) {
+            setInitialMovieNumber(MOVIE_NUMBER_1280);
+        } else if (resolution >= RESOLUTION_320 && savedMoviesPage) {
             setInitialMovieNumber(props.foundMovies.length);
         }
     }, [props.foundMovies, resolution, allMoviesPage, savedMoviesPage]);
 
     useEffect(() => {
         window.onresize = () => {
-            setTimeout(handleResize, 1000);
+            setTimeout(handleResize, TIMEOUT);
         };
     }, []);
 
@@ -64,13 +77,13 @@ export default function MoviesCardList(props) {
     }
 
     function handleAddMovies() {
-        if (resolution <= 620) {
+        if (resolution <= RESOLUTION_620) {
             setMaxMovieNumber(maxMovieNumber + 2);
-        } else if (resolution < 769) {
+        } else if (resolution < RESOLUTION_769) {
             setMaxMovieNumber(maxMovieNumber + 2);
-        } else if (resolution < 1001) {
+        } else if (resolution < RESOLUTION_1001) {
             setMaxMovieNumber(maxMovieNumber + 3);
-        } else if (resolution >= 1001) {
+        } else if (resolution >= RESOLUTION_1001) {
             setMaxMovieNumber(maxMovieNumber + 4);
         }
     }
@@ -86,7 +99,6 @@ export default function MoviesCardList(props) {
                             <MoviesCard
                                 key={movie.id || movie._id}
                                 movie={movie}
-                                icon={props.icon}
                                 onSave={props.onSave}
                                 onDelete={props.onDelete}
                                 savedMovies={props.savedMovies}

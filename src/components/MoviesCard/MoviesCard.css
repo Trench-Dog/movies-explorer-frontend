@@ -25,7 +25,7 @@
     font-weight: 500;
     font-size: 13px;
     line-height: 1.21;
-    color: #FFF;
+    color: #fff;
     width: 226px;
     min-height: 16px;
     padding: 0;
@@ -33,21 +33,36 @@
 }
 
 .movie__button {
-    background-size: 24px;
+    width: 24px;
     height: 24px;
     border-radius: 50%;
     border: none;
-    background: #313131;
+    background: #313131 url('../../images/movie-like.svg') no-repeat 50% 55%;
     cursor: pointer;
     transition: opacity 0.5s ease;
 }
 
-.movie__button:hover {
-    opacity: 0.8;
+.movie__active-button {
+    background-image: url('../../images/movie-like-enabled.svg');
 }
 
-.movie__like {
-    margin: 1px 1px;
+.movie__saved-button {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: #313131 url('../../images/movie-like-enabled.svg') no-repeat 50% 55%;
+    cursor: pointer;
+    transition: opacity 0.5s ease;
+    transition: background-image 0.1s linear;
+}
+.movie__saved-button:hover {
+    opacity: 0.8;
+    background: #313131 url('../../images/delete-movie-icon.svg') no-repeat 50% 50%;
+}
+
+.movie__button:hover {
+    opacity: 0.8;
 }
 
 .movie__duration {
@@ -56,7 +71,7 @@
     font-weight: 400;
     font-size: 11px;
     line-height: 1.21;
-    color: #8B8B8B;
+    color: #8b8b8b;
     margin: 0;
 }
 
@@ -77,6 +92,9 @@
     .movie__cover {
         height: 190px;
     }
+    .movie__saved-button {
+        background-image: url('../../images/delete-movie-icon.svg');
+    }
 }
 
 @media screen and (max-width: 620px) {
@@ -88,7 +106,7 @@
         height: 250px;
     }
 }
-@media screen and (max-width: 400px) {    
+@media screen and (max-width: 400px) {
     .movie__cover {
         height: 168px;
     }

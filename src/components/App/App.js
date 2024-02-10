@@ -11,16 +11,18 @@ import SavedMovies from '../SavedMovies/SavedMovies';
 import NavigationPopup from '../NavigationPopup/NavigationPopup';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
-import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, Navigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 import { mainApi } from '../../utils/MainApi';
 import { moviesApi } from '../../utils/MoviesApi';
 import * as authApi from '../../utils/AuthApi';
 
+import { SHORT_MOVIE } from '../../utils/constants';
+
 export default function App() {
     const navigate = useNavigate();
-
+    const location = useLocation();
     const [isNavPopupOpen, setIsNavPopupOpen] = useState(false);
     const [preloaderActive, setPreloaderActive] = useState(false);
     const [allMovies, setAllMovies] = useState([]);
@@ -30,16 +32,27 @@ export default function App() {
     const [saveBackup, setSaveBackup] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isSuccess, setIsSuccess] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const [checkBoxActive, setCheckboxActive] = useState(false);
     const [savedCheckBoxActive, setSavedCheckboxActive] = useState(false);
-    const [currentUser, setCurrentUser] = useState({
-        _id: '',
-        name: '',
-        email: ''
-    });
+    const savedCurrentUser = localStorage.getItem('currentUser');
+    const initialCurrentUser = savedCurrentUser
+        ? JSON.parse(savedCurrentUser)
+        : { _id: '', name: '', email: '' };
+    const [currentUser, setCurrentUser] = useState(initialCurrentUser);
+    const token = localStorage.getItem('jwt');
+    const loggedIn = Boolean(token);
+    const [isLoggedIn, setIsLoggedIn] = useState(loggedIn);
+
+    useEffect(() => {
+        handleTokenCheck();
+    }, []);
+
+    useEffect(() => {
+        console.log(savedMovies);
+    }, [savedMovies]);
 
     useEffect(() => {
         function onPushEsc(evt) {
@@ -55,28 +68,8 @@ export default function App() {
     }, [isNavPopupOpen]);
 
     useEffect(() => {
-        if (isLoggedIn) {
-            mainApi
-                .getUserInfo()
-                .then(userData => {
-                    setCurrentUser(userData);
-                })
-                .catch(err => alert(err));
-        }
-    }, [isLoggedIn]);
-
-    useEffect(() => {
-        handleTokenCheck();
-    }, []);
-
-    useEffect(() => {
-        if (
-            JSON.parse(localStorage.getItem('searchedMovies')) &&
-            JSON.parse(localStorage.getItem('checkboxActive'))
-        ) {
-            handleCheckbox(JSON.parse(localStorage.getItem('checkboxActive')));
-        }
-    }, []);
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    }, [currentUser]);
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -85,8 +78,49 @@ export default function App() {
                 setSavedMovies(movies);
                 setSaveBackup(movies);
             });
+            mainApi
+                .getUserInfo()
+                .then(userData => {
+                    setCurrentUser(userData);
+                })
+                .catch(err => alert(err));
+        }
+        if (JSON.parse(localStorage.getItem('allMovies'))) {
+            setAllMovies(JSON.parse(localStorage.getItem('allMovies')));
+        }
+        if (JSON.parse(localStorage.getItem('searchedMovies'))) {
+            let activeCheckbox = JSON.parse(localStorage.getItem('checkboxActive'));
+            let searchedMovies = JSON.parse(localStorage.getItem('searchedMovies'));
+            setCheckboxActive(activeCheckbox);
+            if (activeCheckbox) {
+                handleCheckbox(activeCheckbox);
+            } else {
+                setFoundMovies(searchedMovies);
+            }
         }
     }, [isLoggedIn]);
+
+    useEffect(() => {
+        if (
+            location.pathname !== '/sign-in' &&
+            errorMessage === 'Возникла ошибка при авторизации'
+        ) {
+            setErrorMessage('');
+        } else if (
+            location.pathname !== '/sign-up' &&
+            errorMessage === 'Возникла ошибка при регистрации'
+        ) {
+            setErrorMessage('');
+        } else if (
+            location.pathname !== '/profile' &&
+            successMessage === 'Вы успешно обновили профиль!'
+        ) {
+            setSuccessMessage('');
+        }
+        if (location.pathname === '/movies' && savedMovies !== saveBackup) {
+            setSavedMovies(saveBackup);
+        }
+    }, [location]);
 
     function handleRegister(email, password, name) {
         setIsLoading(true);
@@ -137,6 +171,7 @@ export default function App() {
                 if (user) {
                     setCurrentUser(user);
                     setIsSuccess(true);
+                    setSuccessMessage('Вы успешно обновили профиль!');
                 } else {
                     setIsSuccess(false);
                 }
@@ -164,6 +199,8 @@ export default function App() {
     }
 
     function signOut() {
+        setSavedCheckboxActive(false);
+        setCheckboxActive(false);
         setIsLoggedIn(false);
         setIsLoading(false);
         setIsSuccess(true);
@@ -199,7 +236,11 @@ export default function App() {
                         setAllMovies(movies);
                         localStorage.setItem('searchedMovies', JSON.stringify(searchedMovies));
                         localStorage.setItem('searchValue', movie);
-                        setFoundMovies(searchedMovies);
+                        if (checkbox) {
+                            handleCheckbox(checkbox);
+                        } else {
+                            setFoundMovies(searchedMovies);
+                        }
                         localStorage.setItem('checkboxActive', JSON.stringify(checkbox));
                         setPreloaderActive(false);
                     }
@@ -210,7 +251,7 @@ export default function App() {
                 .finally(() => {
                     setIsSearching(false);
                 });
-        } else {
+        } else if (allMovies.length !== 0) {
             const searchedMovies = allMovies.filter(
                 item =>
                     item.nameRU.toLowerCase().includes(movie.toLowerCase()) ||
@@ -223,7 +264,11 @@ export default function App() {
             } else {
                 localStorage.setItem('searchValue', movie);
                 localStorage.setItem('searchedMovies', JSON.stringify(searchedMovies));
-                setFoundMovies(searchedMovies);
+                if (checkbox) {
+                    handleCheckbox(checkbox);
+                } else {
+                    setFoundMovies(searchedMovies);
+                }
                 localStorage.setItem('checkboxActive', JSON.stringify(checkbox));
                 setIsSearching(false);
                 setPreloaderActive(false);
@@ -256,28 +301,26 @@ export default function App() {
     }
 
     function handleCheckbox(status) {
+        let shortMovies;
         let searchedMovies = JSON.parse(localStorage.getItem('searchedMovies'));
-        if (searchedMovies) {
-            let shortMovies;
-            if (status) {
-                shortMovies = searchedMovies.filter(movie => movie.duration <= 40);
-            } else {
-                shortMovies = searchedMovies;
-            }
-            localStorage.setItem('checkboxActive', JSON.stringify(status));
-            setFoundMovies(shortMovies);
+        if (status) {
+            shortMovies = searchedMovies.filter(movie => movie.duration <= SHORT_MOVIE);
+        } else {
+            shortMovies = searchedMovies;
         }
+        setFoundMovies(shortMovies);
+        localStorage.setItem('checkboxActive', JSON.stringify(status));
     }
 
     function handleSavedMoviesCheckbox(status) {
         let shortSavedMovies;
         if (status) {
-            shortSavedMovies = savedMovies.filter(movie => movie.duration <= 40);
-        } else {
+            shortSavedMovies = savedMovies.filter(movie => movie.duration <= SHORT_MOVIE);
+        } else if (!status) {
             shortSavedMovies = saveBackup;
         }
-        localStorage.setItem('savedCheckboxActive', JSON.stringify(status));
         setSavedMovies(shortSavedMovies);
+        localStorage.setItem('savedCheckboxActive', JSON.stringify(status));
     }
 
     function saveMovie(movie) {
@@ -377,6 +420,7 @@ export default function App() {
                                     onEdit={handleEditProfile}
                                     onExit={signOut}
                                     isSuccess={isSuccess}
+                                    successMessage={successMessage}
                                 />
                             </ProtectedRoute>
                         }
@@ -433,7 +477,10 @@ export default function App() {
                             </ProtectedRoute>
                         }
                     />
-                    <Route path='*' element={<PageNotFound navigate={navigate} />} />
+                    <Route
+                        path='*'
+                        element={<PageNotFound navigate={navigate} isLoggedIn={isLoggedIn} />}
+                    />
                 </Routes>
                 <NavigationPopup isOpen={isNavPopupOpen} onClose={closePopups} />
             </div>

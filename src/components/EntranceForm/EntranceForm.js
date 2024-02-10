@@ -34,9 +34,12 @@ export default function EntranceForm(props) {
         }
     }, [email, password, name, location]);
 
+    useEffect(() => {
+        setDisabled(props.isLoading);
+    }, [props.isLoading]);
+
     function handleNameChange(evt) {
         const name = evt.target;
-        console.log(name.value);
         setName({
             value: name.value,
             valid: name.validity.valid,
@@ -102,11 +105,12 @@ export default function EntranceForm(props) {
                         className='entrance-form__data'
                         name='email'
                         placeholder='Введите E-mail'
-                        required
+                        pattern='[^@]+@[^@]+\.[a-zA-Z]{2,}'
                         minLength='2'
                         maxLength='40'
                         value={email.value}
                         onChange={handleEmailChange}
+                        required
                     />
                     <span className='entrance-form__reminder'>{email.error}</span>
                     <p className='entrance-form__input-name'>Пароль</p>

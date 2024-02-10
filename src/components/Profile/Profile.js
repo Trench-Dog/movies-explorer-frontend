@@ -2,9 +2,10 @@ import './Profile.css';
 import { useContext, useState, useEffect } from 'react';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
-export default function Profile({ isLoading, onEdit, onExit, isSuccess }) {
+export default function Profile({ isLoading, onEdit, onExit, isSuccess, successMessage }) {
     const currentUser = useContext(CurrentUserContext);
     const [editingAllowed, setEditingAllowed] = useState(false);
+
     const [email, setEmail] = useState({
         value: currentUser.email,
         valid: false,
@@ -15,8 +16,23 @@ export default function Profile({ isLoading, onEdit, onExit, isSuccess }) {
         valid: false,
         error: ''
     });
+
+    let isValid =
+        email.valid &&
+        name.valid &&
+        (name.value !== currentUser.name || email.value !== currentUser.email);
+
     const [inputsDisabled, setInputsDisabled] = useState(true);
     const [buttonDisabled, setButtonDisabled] = useState(true);
+
+    useEffect(() => {
+      if (name.value === currentUser.name) {
+        name.valid = true;
+      }
+      if (email.value === currentUser.email) {
+        email.valid = true;
+      }
+    }, []);
 
     useEffect(() => {
         if (isSuccess) {
@@ -28,10 +44,9 @@ export default function Profile({ isLoading, onEdit, onExit, isSuccess }) {
         }
     }, [isSuccess]);
 
-    let isValid =
-        email.valid &&
-        name.valid &&
-        (name.value !== currentUser.name || email.value !== currentUser.email);
+    useEffect(() => {
+        setButtonDisabled(isLoading);
+    }, [isLoading]);
 
     useEffect(() => {
         if (isValid) {
@@ -100,8 +115,8 @@ export default function Profile({ isLoading, onEdit, onExit, isSuccess }) {
                             required
                             type='text'
                             value={name.value}
-                            minLength='7'
-                            maxLength='200'
+                            minLength='2'
+                            maxLength='30'
                             onChange={handleNameChange}
                             disabled={inputsDisabled}
                         />
@@ -117,13 +132,14 @@ export default function Profile({ isLoading, onEdit, onExit, isSuccess }) {
                             }`}
                             name='email'
                             placeholder=''
-                            required
                             type='email'
                             value={email.value}
+                            pattern='[^@]+@[^@]+\.[a-zA-Z]{2,}'
                             minLength='2'
                             maxLength='40'
                             onChange={handleEmailChange}
                             disabled={inputsDisabled}
+                            required
                         />
                         <span className='profile__reminder'>{email.error}</span>
                     </div>
@@ -145,6 +161,9 @@ export default function Profile({ isLoading, onEdit, onExit, isSuccess }) {
                     </>
                 ) : (
                     <>
+                        <p className='profile__success-message'>
+                            {isSuccess ? successMessage : ''}
+                        </p>
                         <button
                             type='button'
                             className='profile__button profile__button_type_edit'

@@ -21,6 +21,7 @@ export default function Login(props) {
             text={props.isLoading ? 'Выполняем вход...' : 'Войти'}
             confirmation={confirmation}
             onSubmit={props.onSubmit}
+            isLoading={props.isLoading}
         />
     );
 }

@@ -1,3 +1,4 @@
+import { BASE_URL } from './constants';
 class MainApi {
     constructor(options) {
         this._baseUrl = options.baseUrl;
@@ -87,7 +88,7 @@ class MainApi {
 }
 
 export const mainApi = new MainApi({
-    baseUrl: 'https://api.trenchdogmovie.nomoredomainsmonster.ru',
+    baseUrl: BASE_URL,
     headers: {
         'Content-Type': 'application/json'
     }

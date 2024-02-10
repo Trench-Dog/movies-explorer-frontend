@@ -36,7 +36,7 @@
     font-size: 11px;
     line-height: 1.21;
     color: #fff;
-    margin: 0 0 208px;
+    margin: 0 0 173px;
 }
 
 .profile__input-container {
@@ -123,6 +123,17 @@
     background: #f8f8f8;
     color: #c2c2c2;
     cursor: default;
+}
+
+.profile__success-message {
+    color: #4285f4;
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 1.21;
+    text-align: center;
+    width: 100%;
+    min-height: 14px;
+    margin: auto auto 20px;
 }
 
 .profile__button {
