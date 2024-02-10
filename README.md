@@ -18,3 +18,7 @@ _Проект сверстан по макету Яндекс.Практикум
 ## Где найти?
 
 Сайт располагается здесь - https://trenchdogmovie.nomoredomainsmonster.ru
+
+## Для ревью
+
+Ссылка на pull-request - https://github.com/Trench-Dog/movies-explorer-frontend/pull/2
