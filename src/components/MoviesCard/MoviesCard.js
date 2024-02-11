@@ -16,7 +16,6 @@ export default function MoviesCard(props) {
         location.pathname === '/movies' &&
         props.savedMovies.find(movie => movie.movieId === props.movie.id);
 
-    console.log(savedMovie);
 
     function handleSetDuration(movie) {
         if (movie.duration < ONE_HOUR) {

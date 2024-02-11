@@ -56,7 +56,7 @@
     transition: opacity 0.5s ease;
     transition: background-image 0.1s linear;
 }
-.movie__saved-button:hover {
+.movie:hover .movie__saved-button{
     opacity: 0.8;
     background: #313131 url('../../images/delete-movie-icon.svg') no-repeat 50% 50%;
 }
