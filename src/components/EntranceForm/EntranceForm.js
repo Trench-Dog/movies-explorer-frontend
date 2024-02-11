@@ -1,17 +1,77 @@
 import './EntranceForm.css';
 import { Link } from 'react-router-dom';
 import projectLogo from '../../images/project-logo.svg';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export default function EntranceForm(props) {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const location = useLocation();
+    const [email, setEmail] = useState({
+        value: '',
+        valid: false,
+        error: ''
+    });
+    const [password, setPassword] = useState({
+        value: '',
+        valid: false,
+        error: ''
+    });
+    const [name, setName] = useState({
+        name: '',
+        valid: false,
+        error: ''
+    });
+
+    const [disabled, setDisabled] = useState(true);
+
+    useEffect(() => {
+        if (email.valid && password.valid && name.valid && location.pathname === '/sign-up') {
+            setDisabled(false);
+        } else if (email.valid && password.valid) {
+            setDisabled(false);
+        } else {
+            setDisabled(true);
+        }
+    }, [email, password, name, location]);
+
+    useEffect(() => {
+        setDisabled(props.isLoading);
+    }, [props.isLoading]);
+
+    function handleNameChange(evt) {
+        const name = evt.target;
+        setName({
+            value: name.value,
+            valid: name.validity.valid,
+            error: name.validationMessage
+        });
+    }
     function handleEmailChange(evt) {
-        setEmail(evt.target.value);
+        const email = evt.target;
+        setEmail({
+            value: email.value,
+            valid: email.validity.valid,
+            error: email.validationMessage
+        });
     }
     function handlePasswordChange(evt) {
-        setPassword(evt.target.value);
+        const password = evt.target;
+        setPassword({
+            value: password.value,
+            valid: password.validity.valid,
+            error: password.validationMessage
+        });
     }
+
+    function handleSubmit(evt) {
+        evt.preventDefault();
+        if (location.pathname === '/sign-up') {
+            props.onSubmit(email.value, password.value, name.value);
+        } else if (location.pathname === '/sign-in') {
+            props.onSubmit(email.value, password.value);
+        }
+    }
+
     return (
         <main>
             <section className='entrance-form'>
@@ -19,21 +79,40 @@ export default function EntranceForm(props) {
                     <img src={projectLogo} alt='Логотип' className='entrance-form__logo'></img>
                 </Link>
                 <h1 className='entrance-form__title'>{props.title}</h1>
-                <form className='entrance-form__content' onSubmit={props.onSubmit}>
-                    {props.children}
+                <form name='entrance' className='entrance-form__content' onSubmit={handleSubmit}>
+                    {location.pathname === '/sign-up' ? (
+                        <>
+                            <p className='entrance-form__input-name'>Имя</p>
+                            <input
+                                type='text'
+                                className='entrance-form__data'
+                                name='name'
+                                required
+                                placeholder='Введите имя'
+                                minLength='2'
+                                maxLength='30'
+                                value={name.value}
+                                onChange={handleNameChange}
+                            />
+                            <span className='entrance-form__reminder'>{name.error}</span>
+                        </>
+                    ) : (
+                        ''
+                    )}
                     <p className='entrance-form__input-name'>E-mail</p>
                     <input
                         type='email'
                         className='entrance-form__data'
                         name='email'
                         placeholder='Введите E-mail'
-                        required
+                        pattern='[^@]+@[^@]+\.[a-zA-Z]{2,}'
                         minLength='2'
                         maxLength='40'
-                        value={email}
+                        value={email.value}
                         onChange={handleEmailChange}
+                        required
                     />
-                    <span className='entrance-form__reminder'></span>
+                    <span className='entrance-form__reminder'>{email.error}</span>
                     <p className='entrance-form__input-name'>Пароль</p>
                     <input
                         type='password'
@@ -43,11 +122,20 @@ export default function EntranceForm(props) {
                         placeholder='Введите пароль'
                         minLength='7'
                         maxLength='200'
-                        value={password}
+                        value={password.value}
                         onChange={handlePasswordChange}
                     />
-                    <span className='entrance-form__reminder'>Что-то пошло не так...</span>
-                    <button className='entrance-form__submit-button' type='submit'>
+                    <span className='entrance-form__reminder'>{password.error}</span>
+                    <p className='entrance-form__error'>
+                        {props.isSuccess ? '' : props.errorMessage}
+                    </p>
+                    <button
+                        className={`entrance-form__submit-button ${
+                            disabled ? 'entrance-form__disabled' : ''
+                        }`}
+                        type='submit'
+                        disabled={disabled}
+                    >
                         {props.text}
                     </button>
                 </form>

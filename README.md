@@ -14,3 +14,11 @@ _Проект сверстан по макету Яндекс.Практикум
 -   `/profile` - страница профиля;
 -   `/movies` - страница с возможностью поиска фильмов;
 -   `/saved-movies` - страница с сохраненными фильмами.
+
+## Где найти?
+
+Сайт располагается здесь - https://trenchdogmovie.nomoredomainsmonster.ru
+
+## Для ревью
+
+Ссылка на pull-request - https://github.com/Trench-Dog/movies-explorer-frontend/pull/2

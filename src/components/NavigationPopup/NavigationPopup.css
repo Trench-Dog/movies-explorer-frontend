@@ -34,6 +34,11 @@
     border: none;
     background: url('../../images/close-icon.svg') no-repeat center;
     margin: 27px 27px 111px auto;
+    transition: opacity 0.5s ease;
+}
+
+.popup__close-button:hover {
+    opacity: 0.8;
 }
 
 .popup__link {
